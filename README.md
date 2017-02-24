@@ -41,7 +41,7 @@ arrayOf(string.optional())
 try { string.validate() } catch (e) { console.log(e.toJSON()); }
 ```
 
-for use outside of babel environment ```require('/node_modules/flow-validator/build/index.js')```
+for use outside of babel environment ```require('/node_modules/flow-validator/flow-validator.js')```
 
 # Implemented types / combinators
 

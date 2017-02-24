@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "flow src && flow test && mocha --compilers js:babel-core/register",
-    "build": "babel src --out-file ./build/index.js --source-maps",
+    "build": "babel src --out-file ./flow-validator.js --source-maps",
     "prepublish": "npm run build"
   },
   "keywords": [
