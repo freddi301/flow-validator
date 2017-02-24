@@ -4,7 +4,9 @@
   "description": "object validation with flow types",
   "main": "src/index.js",
   "scripts": {
-    "test": "flow src"
+    "test": "flow src && flow test && mocha --compilers js:babel-core/register",
+    "build": "babel src --out-file ./build/index.js --source-maps",
+    "prepublish": "npm run build"
   },
   "keywords": [
     "flow",
@@ -26,8 +28,14 @@
     "url": "https://github.com/freddi301/flow-validator/issues"
   },
   "homepage": "https://github.com/freddi301/flow-validator#readme",
-  "dependencies": {
-    "babel-cli": "^6.23.0",
-    "flow-bin": "0.40.0"
+  "devDependencies": {
+    "babel-cli": "6.23.0",
+    "babel-core": "6.23.1",
+    "babel-plugin-transform-builtin-extend": "1.1.2",
+    "babel-plugin-transform-flow-strip-types": "6.22.0",
+    "babel-preset-latest": "6.22.0",
+    "chai": "3.5.0",
+    "flow-bin": "0.40.0",
+    "mocha": "3.2.0"
   }
 }

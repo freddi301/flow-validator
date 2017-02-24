@@ -1,0 +1,12 @@
+[ignore]
+
+[include]
+
+../src
+../node_modules/chai
+
+[libs]
+
+./flow_interfaces
+
+[options]

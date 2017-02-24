@@ -4,8 +4,15 @@ export class Type<T> {
   name: string;
   validate: (value: mixed) => T;
   constructor(name: string, validate: (value: mixed) => T) { this.name = name; this.validate = validate; }
-  refine(f: (v: T) => T): Type<T> { return new Type('refinement', v => f(this.validate(v))); }
+  refine(f: (v: T, error: (e: any) => ValidationError) => T): Type<T> {
+    return new Type('refinement', v => f(this.validate(v), (err: any) => new ValidationError({ expected: err, got: v })));
+  }
+  and<T2>(t2: Type<T2>): IntersectionType<T, T2> { return intersection(this, t2); }
+  or<T2>(t2: Type<T2>): UnionType<T, T2> { return union(this, t2); }
+  optional(): OptionalType<T> { return optional(this); }
 }
+
+export class CustomErrorType<T> extends Type<T> {}
 
 export class InstanceOfType<T> extends Type<T> {
   class: Class<T>;
@@ -59,7 +66,7 @@ export class MappingType<K, V> extends Type<{[key: K]: V}> {
   }
 }
 
-export type SchemaProps = {[key: string]: Type<mixed>};
+export type SchemaProps = {[key: string]: Type<*>};
 export type SchemaType<P> = $ObjMap<P, <T>(v: Type<T>) => T>;
 export class ObjectType<S: SchemaProps, T: SchemaType<S>> extends Type<T> {
   schema: S;
@@ -69,9 +76,18 @@ export class ObjectType<S: SchemaProps, T: SchemaType<S>> extends Type<T> {
   }
 }
 
+export type ValidationErrorPayload = { expected: Type<any>, got: any, errors?: {[key: string]: ValidationError } }
 export class ValidationError extends Error {
-  payload: Object;
-  constructor(payload: Object) { super('ValidationError'); this.payload = payload; }
+  payload: ValidationErrorPayload;
+  constructor(payload: ValidationErrorPayload) { super('ValidationError'); this.payload = payload; }
+  toJSON() {
+    if (this.payload.errors) {
+      const errors = {};
+      for (const key of Object.keys(this.payload.errors)) { errors[key] = this.payload.errors[key].toJSON(); }
+      return { expected: this.payload.expected, got: this.payload.got, errors }
+    }
+    return this.payload;
+  }
 }
 
 export const string: Type<string> = new Type('string', v => {
@@ -124,14 +140,14 @@ export function classOf<T>(c: Class<T>): ClassOfType<Class<T>> {
 export function arrayOf<T>(t: Type<T>): ArrayOfType<T> {
   const aof = new ArrayOfType(t, v => {
     const a = arrayType.validate(v);
-    const errors = [];
+    const errors = {};
     a.forEach((item, index) => {
       try { t.validate(item); } catch (e) {
-        if (e instanceof ValidationError) errors.push({ index, error: e });
+        if (e instanceof ValidationError) errors[index] = e;
         else throw e;
       }
     });
-    if (errors.length) throw new ValidationError({ expected: aof, got: v, errors });
+    if (Object.getOwnPropertyNames(errors).length) throw new ValidationError({ expected: aof, got: v, errors });
     return ((a: any): Array<T>); // eslint-disable-line flowtype/no-weak-types
     // return a.map(t.validate); this is type correct
   });
@@ -149,8 +165,8 @@ export function intersection<A, B>(a: Type<A>, b: Type<B>): IntersectionType<A, 
 export function union<A, B>(a: Type<A>, b: Type<B>): UnionType<A, B> {
   const u = new UnionType(a, b, v => {
     let left; let right;
-    try { left = a.validate(v); } catch (e) { if (e instanceof ValidationError); throw e; }
-    try { right = b.validate(v); } catch (e) { if (e instanceof ValidationError); throw e; }
+    try { left = a.validate(v); } catch (e) { if (e instanceof ValidationError); else throw e; }
+    try { right = b.validate(v); } catch (e) { if (e instanceof ValidationError); else throw e; }
     if (left) return left;
     if (right) return right;
     throw new ValidationError({ expected: u, got: v });
@@ -182,22 +198,23 @@ export function mapping<K: string, V>(keys: Type<K>, values: Type<V>): MappingTy
     for (const key of ks) {
       const value = o[key];
       let ke; let ve;
-      try { keys.validate(key); } catch (e) { if (e instanceof ValidationError) ke = e; throw e; }
-      try { values.validate(value); } catch (e) { if (e instanceof ValidationError) ve = e; throw e; }
+      try { keys.validate(key); } catch (e) { if (e instanceof ValidationError) ke = e; else throw e; }
+      try { values.validate(value); } catch (e) { if (e instanceof ValidationError) ve = e; else throw e; }
       if (ke || ve) { errors[key] = { key: ke, value: ve }; }
     }
-    if (errors.length) throw new ValidationError({ expected: m, got: v, errors });
+    if (Object.getOwnPropertyNames(errors).length) throw new ValidationError({ expected: m, got: v, errors });
     return ((v: any): {[key: K]: V}); // eslint-disable-line flowtype/no-weak-types
   });
   return m;
 }
 
 function unionFromObjectKeys<O: Object>(o: O): Type<$Keys<O>> {
-  return new Type('enum', v => {
+  const en = new Type('enum', v => {
     const keys = Object.keys(o);
     if (~keys.indexOf(v)) return ((v: any): $Keys<O>);  // eslint-disable-line flowtype/no-weak-types
-    throw new ValidationError({ }); // TODO
+    throw new ValidationError({ expected: en, got: v }); // TODO
   });
+  return en;
 }
 
 export function object<S:SchemaProps>(s: S): ObjectType<S, SchemaType<S>> {
@@ -206,22 +223,21 @@ export function object<S:SchemaProps>(s: S): ObjectType<S, SchemaType<S>> {
     const keys = Object.keys(s);
     const errors = {};
     for (const key of keys) {
-      try { s[key].validate(o[key]) } catch (e) { if (e instanceof ValidationError) errors[key] = e; throw e; }
+      try { s[key].validate(o[key]) } catch (e) { if (e instanceof ValidationError) errors[key] = e; else throw e; }
     }
-    if (errors.length) throw new ValidationError({ expected: os, got: o, errors });
+    if (Object.getOwnPropertyNames(errors).length) throw new ValidationError({ expected: os, got: o, errors });
     return o;
   });
   return os;
 }
 
-// TODO: exact
-// TODO: tuple
-// TODO: unions
-// TODO: intersections
-// TODO: https://github.com/gcanti/flow-io
-// TODO: https://github.com/andreypopp/validated
-
-
-/*const x = object({ a: string, x: number }).validate({})
+/*
+const X = object({ a: string, x: number });
+const x = X.validate({})
 const y: { a: string, x: number } = x;
-const z: { a: Array<Date>, x: number} = x;*/
+const z: { a: Array<Date>, x: number} = x;
+const M = object({ x: X, s: number });
+const m = M.validate();
+const e = string.or(number).or(boolean).optional().validate();
+const bb = arrayOf(string.optional())
+*/

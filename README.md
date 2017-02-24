@@ -1,18 +1,47 @@
+[![Build Status](https://travis-ci.org/freddi301/flow-validator.svg?branch=master)](https://travis-ci.org/freddi301/flow-validator)
+
 # flow-validator
+
+## Installation
+
+```npm install flow-validator```
 
 Object validation with proper flow types.
 
 ## Usage
 
 ```javascript
-import { arrayOf, string, number, instanceof, union, object } from 'flow-validator'
+import {
+  arrayOf, string, number,
+  instanceof, union, object,
+  ValidationError
+} from 'flow-validator'
 
-arrayOf(union(string, instanceOf(Date))).validate([1, new Date, '10/2'])
+// Array<string | Date>
+const Dates = arrayOf(union(string, instanceOf(Date)));
+const validDates = Dates.validate([1, new Date, '10/2']); // throws
 
-string.refine(s => { if (/el/.test(s)) return s; throw new Error(); }).validate('hello')
+const RefinedString = string.refine((s, error) => {
+  if (/el/.test(s)) return s;
+  throw error(/el/); // this throws proper error
+});
+const validRefinedString = RefinedString.validate('hello');
 
+// { a: string, b: number }
 object({ a: string, b: number }).validate({}) // throws error
+
+// fluent syntax
+// number | string | boolean
+string.or(number).or(boolean)
+
+// Array<?string>
+arrayOf(string.optional())
+
+// to get JSON error report
+try { string.validate() } catch (e) { console.log(e.toJSON()); }
 ```
+
+for use outside of babel environment ```require('/node_modules/flow-validator/build/index.js')```
 
 # Implemented types / combinators
 
@@ -35,7 +64,20 @@ object({ a: string, b: number }).validate({}) // throws error
 | object | `{ name: string }` | `object({ name: string })` |
 | function | `(a: A) => B` | ✘ |
 
+# Feature Requests Wanted
+(open issue, include examples or links)
+
 # TODO
 
-- [ ] npm package
 - [ ] test coverage
+- [ ] travis
+- [ ] promise
+- [ ] literal values
+- [ ] fluent syntax
+- [ ] exact
+- [ ] tuple
+- [ ] common controls
+- [ ] performance comparison
+- [ ] include https://github.com/gcanti/flow-io features
+- [ ] include https://github.com/andreypopp/validated features
+- [ ] include https://github.com/hapijs/joi features
