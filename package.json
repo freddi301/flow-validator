@@ -1,0 +1,21 @@
+{
+  "name": "flow-validator",
+  "version": "0.0.1",
+  "description": "object validation with flow types",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "flow",
+    "js",
+    "javascript",
+    "schema",
+    "object",
+    "validation",
+    "validate",
+    "validator"
+  ],
+  "author": "Frederik Batuna <gobi301@gmail.com>",
+  "license": "MIT"
+}
