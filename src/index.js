@@ -1,28 +1,28 @@
 // @flow
 
-class Type<T> {
+export class Type<T> {
   name: string;
   validate: (value: mixed) => T;
   constructor(name: string, validate: (value: mixed) => T) { this.name = name; this.validate = validate; }
   refine(f: (v: T) => T): Type<T> { return new Type('refinement', v => f(this.validate(v))); }
 }
 
-class InstanceOfType<T> extends Type<T> {
+export class InstanceOfType<T> extends Type<T> {
   class: Class<T>;
   constructor(c: Class<T>, validate: (value: mixed) => T) { super('instanceof', validate); this.class = c; }
 }
 
-class ClassOfType<T> extends Type<T> {
+export class ClassOfType<T> extends Type<T> {
   class: T;
   constructor(c: T, validate: (value: mixed) => T) { super('classOf', validate); this.class = c; }
 }
 
-class ArrayOfType<T> extends Type<Array<T>> {
+export class ArrayOfType<T> extends Type<Array<T>> {
   type: Type<T>;
   constructor(t: Type<T>, validate: (value: mixed) => Array<T>) { super('arrayOf', validate); this.type = t; }
 }
 
-class IntersectionType<A, B> extends Type<A & B> {
+export class IntersectionType<A, B> extends Type<A & B> {
   typeA: Type<A>;
   typeB: Type<B>;
   constructor(a: Type<A>, b: Type<B>, validate: (value: mixed) => A & B) {
@@ -30,7 +30,7 @@ class IntersectionType<A, B> extends Type<A & B> {
   }
 }
 
-class UnionType<A, B> extends Type<A | B> {
+export class UnionType<A, B> extends Type<A | B> {
   typeA: Type<A>;
   typeB: Type<B>;
   constructor(a: Type<A>, b: Type<B>, validate: (value: mixed) => A | B) {
@@ -38,18 +38,18 @@ class UnionType<A, B> extends Type<A | B> {
   }
 }
 
-class LiteralType<T> extends Type<T> {
+export class LiteralType<T> extends Type<T> {
   value: T;
   constructor(t: T, validate: (value: mixed) => T) { super('literal', validate); this.value = t; }
 
 }
 
-class OptionalType <T> extends Type<?T> {
+export class OptionalType <T> extends Type<?T> {
   type: Type<T>;
   constructor(t: Type<T>, validate: (value: mixed) => ?T) { super('optional', validate); this.type = t; }
 }
 
-class MappingType<K, V> extends Type<{[key: K]: V}> {
+export class MappingType<K, V> extends Type<{[key: K]: V}> {
   keys: Type<K>;
   values: Type<V>;
   constructor(keys: Type<K>, values: Type<V>, validate: (value: mixed) => {[key: K]: V}) {
@@ -59,7 +59,17 @@ class MappingType<K, V> extends Type<{[key: K]: V}> {
   }
 }
 
-class ValidationError extends Error {
+export type SchemaProps = {[key: string]: Type<mixed>};
+export type SchemaType<P> = $ObjMap<P, <T>(v: Type<T>) => T>;
+export class ObjectType<S: SchemaProps, T: SchemaType<S>> extends Type<T> {
+  schema: S;
+  constructor(schema: S, validate: (value: mixed) => T) {
+    super('object', validate);
+    this.schema = schema;
+  }
+}
+
+export class ValidationError extends Error {
   payload: Object;
   constructor(payload: Object) { super('ValidationError'); this.payload = payload; }
 }
@@ -80,7 +90,7 @@ export const boolean: Type<bool> = new Type('boolean', v => {
 });
 
 export const objectType: Type<Object> = new Type('Object', v => {
-  if (typeof v === 'object' && !!v) return v;
+  if (typeof v === 'object' && !!v && !Array.isArray(v)) return v;
   throw new ValidationError({ expected: objectType, got: v });
 });
 
@@ -186,16 +196,32 @@ function unionFromObjectKeys<O: Object>(o: O): Type<$Keys<O>> {
   return new Type('enum', v => {
     const keys = Object.keys(o);
     if (~keys.indexOf(v)) return ((v: any): $Keys<O>);  // eslint-disable-line flowtype/no-weak-types
-    throw new ValidationError({ });
+    throw new ValidationError({ }); // TODO
   });
 }
 
-// TODO: Object
+export function object<S:SchemaProps>(s: S): ObjectType<S, SchemaType<S>> {
+  const os = new ObjectType(s, v => {
+    const o = objectType.validate(v);
+    const keys = Object.keys(s);
+    const errors = {};
+    for (const key of keys) {
+      try { s[key].validate(o[key]) } catch (e) { if (e instanceof ValidationError) errors[key] = e; throw e; }
+    }
+    if (errors.length) throw new ValidationError({ expected: os, got: o, errors });
+    return o;
+  });
+  return os;
+}
+
 // TODO: exact
 // TODO: tuple
+// TODO: unions
+// TODO: intersections
 // TODO: https://github.com/gcanti/flow-io
 // TODO: https://github.com/andreypopp/validated
 
-const x = mapping((unionFromObjectKeys({ a: 0, x: 0 })), number).validate(5);
-const y = unionFromObjectKeys({ a: 0, x: 0 }).validate(0)
-const z = union(number, string).validate(9);
+
+/*const x = object({ a: string, x: number }).validate({})
+const y: { a: string, x: number } = x;
+const z: { a: Array<Date>, x: number} = x;*/
