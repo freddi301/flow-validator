@@ -3,7 +3,7 @@
 [![bitHound Overall Score](https://www.bithound.io/github/freddi301/flow-validator/badges/score.svg)](https://www.bithound.io/github/freddi301/flow-validator)
 [![bitHound Code](https://www.bithound.io/github/freddi301/flow-validator/badges/code.svg)](https://www.bithound.io/github/freddi301/flow-validator)
 [![Code Climate](https://codeclimate.com/github/freddi301/flow-validator/badges/gpa.svg)](https://codeclimate.com/github/freddi301/flow-validator)
-[![Coverage Status](https://coveralls.io/repos/freddi301/flow-validator/badge.svg?branch=master)](https://coveralls.io/r/freddi301/flow-validator?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/freddi301/flow-validator/badge.svg?branch=master)](https://coveralls.io/github/freddi301/flow-validator?branch=master)
 [![Inline docs](http://inch-ci.org/github/freddi301/flow-validator.svg?branch=master)](http://inch-ci.org/github/freddi301/flow-validator)
 
 [![bitHound Dependencies](https://www.bithound.io/github/freddi301/flow-validator/badges/dependencies.svg)](https://www.bithound.io/github/freddi301/flow-validator/master/dependencies/npm)
