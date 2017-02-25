@@ -5,9 +5,13 @@
   "main": "src/index.js",
   "scripts": {
     "eslint": "eslint src && eslint test",
-    "test": "nsp check && flow src && flow test && npm run eslint && mocha",
+    "flow": "flow check src && flow check test",
+    "checkdeps": "nsp check",
+    "test": "mocha",
     "coverage": "nyc mocha",
+    "coveralls": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "build": "babel src --out-file ./flow-validator.js --source-maps",
+    "precommit": "npm run eslint && npm run flow && npm run checkdeps && npm test && npm run coverage",
     "prepublish": "npm run build"
   },
   "keywords": [
@@ -38,9 +42,11 @@
     "babel-plugin-transform-flow-strip-types": "6.22.0",
     "babel-preset-latest": "6.22.0",
     "chai": "3.5.0",
+    "coveralls": "2.11.16",
     "eslint": "3.16.1",
     "eslint-plugin-flowtype": "2.30.0",
     "flow-bin": "0.40.0",
+    "husky": "0.13.1",
     "istanbul": "0.4.5",
     "mocha": "3.2.0",
     "nsp": "2.6.2",

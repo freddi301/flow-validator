@@ -3,6 +3,7 @@
 [![bitHound Overall Score](https://www.bithound.io/github/freddi301/flow-validator/badges/score.svg)](https://www.bithound.io/github/freddi301/flow-validator)
 [![bitHound Code](https://www.bithound.io/github/freddi301/flow-validator/badges/code.svg)](https://www.bithound.io/github/freddi301/flow-validator)
 [![Code Climate](https://codeclimate.com/github/freddi301/flow-validator/badges/gpa.svg)](https://codeclimate.com/github/freddi301/flow-validator)
+[![Coverage Status](https://coveralls.io/repos/freddi301/flow-validator/badge.svg?branch=master)](https://coveralls.io/r/freddi301/flow-validator?branch=master)
 [![Inline docs](http://inch-ci.org/github/freddi301/flow-validator.svg?branch=master)](http://inch-ci.org/github/freddi301/flow-validator)
 
 [![bitHound Dependencies](https://www.bithound.io/github/freddi301/flow-validator/badges/dependencies.svg)](https://www.bithound.io/github/freddi301/flow-validator/master/dependencies/npm)
@@ -10,7 +11,7 @@
 [![davidDm Dependencies](https://david-dm.org/freddi301/flow-validator.svg)]()
 [![Known Vulnerabilities](https://snyk.io/test/github/freddi301/flow-validator/badge.svg)](https://snyk.io/test/github/freddi301/flow-validator)
 [![NSP Status](https://nodesecurity.io/orgs/frederik-batuna/projects/f9a6e9b9-c6d8-4cfb-84c0-548310794dcb/badge)](https://nodesecurity.io/orgs/frederik-batuna/projects/f9a6e9b9-c6d8-4cfb-84c0-548310794dcb)
-![](https://reposs.herokuapp.com/?path=CocoaPods/Specs)
+![](https://reposs.herokuapp.com/?path=freddi301/flow-validator)
 
 [![NPM](https://nodei.co/npm/flow-validator.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/flow-validator/)
 
@@ -93,11 +94,9 @@ for use outside of babel environment ```require('/node_modules/flow-validator/fl
 
 - [ ] tuple
 - [ ] literal values
+- [ ] include https://github.com/hapijs/joi/blob/master/API.md features
 - [ ] test 100%
-- [ ] precommit hooks
-- [ ] http://maximilianschmitt.me/posts/istanbul-code-coverage-badge-github/
 - [ ] copy on validate
 - [ ] promise
 - [ ] common controls
 - [ ] performance comparison
-- [ ] include https://github.com/hapijs/joi/blob/master/API.md features
