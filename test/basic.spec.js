@@ -1,4 +1,5 @@
 // @flow
+/* eslint-env mocha */
 
 import { expect } from 'chai';
 
@@ -24,7 +25,7 @@ describe('error JSON', () => {
       string.validate(3);
     } catch (e) {
       expect(e).instanceof(ValidationError);
-      expect(JSON.parse(JSON.stringify(e.toJSON()))).to.deep.equal({ expected: { name: 'string' }, got: 3 })
+      expect(JSON.parse(JSON.stringify(e.toJSON()))).to.deep.equal({ expected: { name: 'string' }, got: 3 });
     }
   });
   it('works with custom error', () => {

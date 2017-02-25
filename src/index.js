@@ -66,12 +66,20 @@ export class MappingType<K, V> extends Type<{[key: K]: V}> {
   }
 }
 
-export type SchemaProps = {[key: string]: Type<*>};
+export type SchemaProps = {[key: string]: Type<any>};
 export type SchemaType<P> = $ObjMap<P, <T>(v: Type<T>) => T>;
 export class ObjectType<S: SchemaProps, T: SchemaType<S>> extends Type<T> {
   schema: S;
   constructor(schema: S, validate: (value: mixed) => T) {
     super('object', validate);
+    this.schema = schema;
+  }
+}
+
+export class ObjectExactType<S: SchemaProps, T: SchemaType<S>> extends Type<T> {
+  schema: S;
+  constructor(schema: S, validate: (value: mixed) => T) {
+    super('objectExact', validate);
     this.schema = schema;
   }
 }
@@ -90,6 +98,30 @@ export class ValidationError extends Error {
   }
 }
 
+export const empty: Type<void | null> = new Type('empty', v => {
+  if (v === null || v === void 0) return v;
+  throw new ValidationError({ expected: empty, got: v });
+});
+
+export const isNull: Type<null> = new Type('null', v => {
+  if (v === null) return v;
+  throw new ValidationError({ expected: isNull, got: v });
+});
+
+export const isUndefined: Type<void> = new Type('undefined', v => {
+  if (v === void 0) return v;
+  throw new ValidationError({ expected: isUndefined, got: v });
+});
+
+export const noProperty: Type<void> = new Type('noProperty', v => {
+  if (v === void 0) return v;
+  throw new ValidationError({ expected: isUndefined, got: v });
+});
+
+export const isMixed: Type<mixed> = new Type('mixed', v => v);
+
+export const isAny: Type<any> = new Type('any', v => v);
+
 export const string: Type<string> = new Type('string', v => {
   if (typeof v === 'string') return v;
   throw new ValidationError({ expected: string, got: v });
@@ -100,7 +132,7 @@ export const number: Type<number> = new Type('number', v => {
   throw new ValidationError({ expected: number, got: v });
 });
 
-export const boolean: Type<bool> = new Type('boolean', v => {
+export const boolean: Type<boolean> = new Type('boolean', v => {
   if (typeof v === 'boolean') return v;
   throw new ValidationError({ expected: boolean, got: v });
 });
@@ -174,7 +206,7 @@ export function union<A, B>(a: Type<A>, b: Type<B>): UnionType<A, B> {
   return u;
 }
 
-type LiteralTypeValue = string | number | bool;
+type LiteralTypeValue = string | number | boolean;
 export function literal<T: LiteralTypeValue>(value: T): LiteralType<T> {
   const lt = new LiteralType(value, v => {
     if (value === v) return ((v: any): T); // eslint-disable-line flowtype/no-weak-types
@@ -208,11 +240,11 @@ export function mapping<K: string, V>(keys: Type<K>, values: Type<V>): MappingTy
   return m;
 }
 
-function unionFromObjectKeys<O: Object>(o: O): Type<$Keys<O>> {
+export function unionFromObjectKeys<O: Object>(o: O): Type<$Keys<O>> {
   const en = new Type('enum', v => {
     const keys = Object.keys(o);
     if (~keys.indexOf(v)) return ((v: any): $Keys<O>);  // eslint-disable-line flowtype/no-weak-types
-    throw new ValidationError({ expected: en, got: v }); // TODO
+    throw new ValidationError({ expected: en, got: v });
   });
   return en;
 }
@@ -231,6 +263,21 @@ export function object<S:SchemaProps>(s: S): ObjectType<S, SchemaType<S>> {
   return os;
 }
 
+export function objectExact<S:SchemaProps>(s: S): ObjectExactType<S, SchemaType<$Exact<S>>> {
+  const os = new ObjectExactType(s, v => {
+    const o = objectType.validate(v);
+    const keys = Object.keys(o);
+    const errors = {};
+    for (const key of keys) {
+      if (!s.hasOwnProperty(key)) { errors[key] = new ValidationError({ expected: noProperty, got: o[key] }) }
+      else try { s[key].validate(o[key]) } catch (e) { if (e instanceof ValidationError) errors[key] = e; else throw e; }
+    }
+    if (Object.getOwnPropertyNames(errors).length) throw new ValidationError({ expected: os, got: o, errors });
+    return o;
+  });
+  return os;
+}
+
 /*
 const X = object({ a: string, x: number });
 const x = X.validate({})
@@ -240,4 +287,5 @@ const M = object({ x: X, s: number });
 const m = M.validate();
 const e = string.or(number).or(boolean).optional().validate();
 const bb = arrayOf(string.optional())
+const nu = isNull.validate();
 */

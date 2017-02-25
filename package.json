@@ -4,7 +4,9 @@
   "description": "object validation with flow types",
   "main": "src/index.js",
   "scripts": {
-    "test": "flow src && flow test && mocha --compilers js:babel-core/register",
+    "eslint": "eslint src && eslint test",
+    "test": "nsp check && flow src && flow test && npm run eslint && mocha",
+    "coverage": "nyc mocha",
     "build": "babel src --out-file ./flow-validator.js --source-maps",
     "prepublish": "npm run build"
   },
@@ -31,11 +33,17 @@
   "devDependencies": {
     "babel-cli": "6.23.0",
     "babel-core": "6.23.1",
+    "babel-eslint": "7.1.1",
     "babel-plugin-transform-builtin-extend": "1.1.2",
     "babel-plugin-transform-flow-strip-types": "6.22.0",
     "babel-preset-latest": "6.22.0",
     "chai": "3.5.0",
+    "eslint": "3.16.1",
+    "eslint-plugin-flowtype": "2.30.0",
     "flow-bin": "0.40.0",
-    "mocha": "3.2.0"
+    "istanbul": "0.4.5",
+    "mocha": "3.2.0",
+    "nsp": "2.6.2",
+    "nyc": "10.1.2"
   }
 }
