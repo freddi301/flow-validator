@@ -113,15 +113,16 @@ const y = object({ x }).parse(); // : { x: Date }
 # TODO
 
 - [ ] literal values
-- [ ] .validateAsync() .parseAsync() promise
+- [ ] fix validate/parse [.refine() has validate+parse] [.to() has parse]
 - [ ] common controls
-- [ ] generate documentation from types (md, html)
+- [ ] .validateAsync() .parseAsync() promise
+- [ ] generate documentation from types (md, html, jsonschema)
 - [ ] include https://github.com/hapijs/joi/blob/master/API.md features
 - [ ] doc examples for all
 - [ ] test 100%
 - [ ] doc 100%
 - [ ] better flow coverage where possible
-- [ ] json schema gen & validation
+- [ ] json schema validation
 - [ ] performance comparison
 - [ ] optimize, use lodash, cache optional() singleton and frequently used types
 - [ ] .refine().revalidate() .to().revalidate() revalidate after trasformation

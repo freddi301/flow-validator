@@ -4,7 +4,6 @@ export class Type<T> {
   name: string;
   validate: (value: mixed) => T;
   parse: (value: mixed) => T;
-  revalidate: ?boolean;
   constructor(name: string, validate: (value: mixed) => T, parse: ?(value: mixed) => T) {
     this.name = name;
     this.validate = validate;
