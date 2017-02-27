@@ -2,6 +2,7 @@ node_modules
 .nyc_output
 coverage
 npm-debug.log
+doc
 flow-validator.js
 flow-validator.js.map
 flow-validator.min.js

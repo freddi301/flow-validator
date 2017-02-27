@@ -1,6 +1,7 @@
 node_modules
 coverage
 test
+doc
 yarn.lock
 .nyc_output
 npm-debug.log

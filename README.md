@@ -73,6 +73,15 @@ for use outside of babel environment ```require('/node_modules/flow-validator/fl
 | all types | `mixed` | `isMixed` |
 | function | `(a: A) => B` | ✘ |
 
+# Technical documentation
+
+```
+git clone https://github.com/freddi301/flow-validator.git
+cd flow-validator
+yarn
+npm run doc:serve
+```
+
 # Feature Requests Wanted
 (open issue, include examples or links)
 
@@ -80,14 +89,12 @@ for use outside of babel environment ```require('/node_modules/flow-validator/fl
 
 - [ ] tuple
 - [ ] literal values
-- [ ] include https://github.com/hapijs/joi/blob/master/API.md features
-- [ ] common controls
-- [ ] test 100%
-- [ ] documentation
 - [ ] copy on validate
-- [ ] doc 100%
+- [ ] common controls
+- [ ] include https://github.com/hapijs/joi/blob/master/API.md features
 - [ ] doc examples for all
-- [ ] host doc on github pages
+- [ ] test 100%
+- [ ] doc 100%
 - [ ] json schema gen & validation
 - [ ] promise
 - [ ] performance comparison

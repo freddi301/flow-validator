@@ -12,7 +12,10 @@
     "coveralls": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "build": "babel src --out-file ./flow-validator.js --source-maps",
     "build:min": "uglifyjs ./flow-validator.js -o ./flow-validator.min.js --source-map ./flow-validator.min.js.map -c -m",
-    "precommit": "npm run eslint && npm run flow && npm run checkdeps && npm test && npm run coverage",
+    "doc:serve": "documentation serve src -g --document-exported -w -f html",
+    "doc:lint": "documentation lint src -g --documet-exported",
+    "doc:build": "documentation build src -g --document-exported -f html -o doc",
+    "precommit": "npm run doc:lint && npm run eslint && npm run flow && npm run checkdeps && npm test && npm run coverage",
     "prepublish": "npm run build && npm run build:min"
   },
   "keywords": [
@@ -44,6 +47,7 @@
     "babel-preset-latest": "6.22.0",
     "chai": "3.5.0",
     "coveralls": "2.11.16",
+    "documentation": "4.0.0-beta.18",
     "eslint": "3.16.1",
     "eslint-plugin-flowtype": "2.30.0",
     "flow-bin": "0.40.0",
