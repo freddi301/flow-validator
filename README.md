@@ -30,34 +30,39 @@ const Schema = object({
     throw error(/el/); // this throws proper error
   }),
   e: string.to(s => new Date(s)) // with .to() you can convert types
-})
+});
 
 const toBeValidated = {
-  a: 'hi'.
+  a: 'hi',
   c: [1, new Date, '2017'],
   d: 'hello',
   e: 'Mon Feb 27 2017 10:00:15 GMT-0800 (PST)'
-}
+};
 
 // validate input object, returns original object if valid, throws otherwise
 // WARNING: if .validate() is used with type converters or .to() types,
 // the type will not be right, as validate return original input, meanwhile .to() produces a new object
-Schema.validate(toBeValidated) === toBeValidated // = true
+Schema.validate(toBeValidated) === toBeValidated; // = true
 
 // same as validate, but it make a copy in case of: arrayOf, tuple, mapping, object, objectExact
 // it can be used when using refinemnts that return not the original value
 // and with .to() for conversions
-Schema.parse(toBeValidated) === toBeValidated // = false
+Schema.parse(toBeValidated) === toBeValidated; // = false
 
 // shortcuts
-Schema.isValid(toBeValidated) // : boolean
-Schema.validateResult(toBeValidated) // : { value: ... } | { error: ... }
-Schema.parseResult(toBeValidated) // : { value: ... } | { error: ... }
+Schema.isValid(toBeValidated); // : boolean
+Schema.validateResult(toBeValidated); // : { value: ... } | { error: ... }
+Schema.parseResult(toBeValidated); // : { value: ... } | { error: ... }
 
-// to get JSON error report
-try { Schema.validate() } catch (e) { console.log(e.toJSON()); }
-Schema.validateResult().toJSON()
+// to get JSON serializable error report
+try { Schema.validate(); } catch (e) { console.log(e.toJSON()); } // eslint-disable-line no-console
 
+// sometimes flow will not remember types, ex:
+object({ x: number.to(n => new Date(n)) }).parse({ x: 4 }); // unknown type
+
+// solution
+const x2: Type<Date> = number.to(n => new Date(n));
+object({ x2 }).parse({ x2: 4 }); // : { x: Date }
 ```
 
 for use outside of babel environment ```require('/node_modules/flow-validator/flow-validator.js')```
@@ -101,24 +106,16 @@ npm run doc:serve
 # Feature Requests Wanted
 (open issue, include examples or links)
 
-# Work around for Flow bugs
-
-```javascript
-// sometimes flow will not remember types, ex:
-const x = object({ x: number.to(n => new Date(n)) }).parse() // unknown type
-
-// solution
-const x: Type<Date> = number.to(n => new Date(n));
-const y = object({ x }).parse(); // : { x: Date }
-```
-
 # TODO
 
 - [ ] fix validate/parse [.refine() has validate+parse] [.to() has parse] (cannot mix .to() types if want retain .validate())
+- [ ] two classes Type { parse() to() refine() } <- VType extends Type { validate() } (dont forget helpers .isValid() .<method>Result())
+- [ ] fix .to().end(instaceOf())
+- [ ] readme += new type example
 - [ ] common controls
 - [ ] include https://github.com/hapijs/joi/blob/master/API.md features
 - [ ] .validateAsync() .parseAsync() promise
-- [ ] generate documentation from types (md, html, jsonschema)
+- [ ] generate documentation from types (md, html, jsonschema, blueprint, mson)
 - [ ] doc examples for all
 - [ ] test 100%
 - [ ] doc 100%

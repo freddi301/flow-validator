@@ -22,10 +22,10 @@ export class Type<T> {
   and<T2>(t2: Type<T2>): IntersectionType<T, T2> { return intersection(this, t2); }
   or<T2>(t2: Type<T2>): UnionType<T, T2> { return union(this, t2); }
   optional(): OptionalType<T> { return optional(this); }
-  validateResult(v: mixed): { value: T } | { error: ValidationError } {
+  validateResult(v: mixed): { value?: T, error?: ValidationError} {
     try { return { value: this.validate(v) }; } catch (e) { if (e instanceof ValidationError) return { error: e }; throw e; }
   }
-  parseResult(v: mixed): { value: T } | { error: ValidationError } {
+  parseResult(v: mixed): { value?: T, error?: ValidationError } {
     try { return { value: this.parse(v) }; } catch (e) { if (e instanceof ValidationError) return { error: e }; throw e; }
   }
 

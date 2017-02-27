@@ -13,7 +13,7 @@
     "build": "babel src --out-file ./flow-validator.js --source-maps",
     "build:min": "uglifyjs ./flow-validator.js -o ./flow-validator.min.js --source-map ./flow-validator.min.js.map -c -m",
     "doc:serve": "documentation serve src -g --document-exported -w -f html",
-    "doc:lint": "documentation lint src -g --documet-exported",
+    "doc:lint": "documentation lint src -g",
     "doc:build": "documentation build src -g --document-exported -f html -o doc",
     "precommit": "npm run doc:lint && npm run eslint && npm run flow && npm run checkdeps && npm test && npm run coverage",
     "prepublish": "npm run build && npm run build:min"
