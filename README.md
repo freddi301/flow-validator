@@ -18,8 +18,6 @@ Object validation with proper flow types.
 ## Usage
 
 ```javascript
-import { arrayOf, string, number, object, instanceOf, Type, Vobject } from '../src';
-
 // { a: string, b: number, c: Array<string | number | Date>, d: string, e: Date }
 const Schema = object({
   a: string,
@@ -28,7 +26,7 @@ const Schema = object({
   d: string.refine((s, error) => { // refinements must return the same type
     if (/el/.test(s)) return s;
     throw error(/el/); // this throws proper error
-  }),
+  }).revalidate(), // add a revalidate if want to be sure not changed type during refinement
   e: string.to(s => new Date(s)) // with .to() you can convert types
 });
 
@@ -112,10 +110,9 @@ npm run doc:serve
 
 # TODO
 
-- [ ] readme += new type example
+- [ ] .validateAsync() .parseAsync() promise
 - [ ] common controls
 - [ ] include https://github.com/hapijs/joi/blob/master/API.md features
-- [ ] .validateAsync() .parseAsync() promise
 - [ ] generate documentation from types (md, html, jsonschema, blueprint, mson)
 - [ ] doc examples for all
 - [ ] test 100%
@@ -124,7 +121,7 @@ npm run doc:serve
 - [ ] json schema validation
 - [ ] performance comparison
 - [ ] optimize, use lodash, cache optional() singleton and frequently used types
-- [ ] .refine().revalidate() .to().revalidate() revalidate after trasformation
+- [ ] readme += new type example
 - [ ] literal values
 
 ---

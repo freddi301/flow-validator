@@ -10,8 +10,8 @@ export class Type<T> {
   to<T2>(f: (v: T, error: (e: any) => ValidationError) => T2): Type<T2> {
     return new Type('trasformation', v => f(this.parse(v), (err: any) => new ValidationError({ expected: err, got: v })));
   }
-  refine(f: (v: T, error: (e: any) => ValidationError) => T): Type<T> {
-    return new Type('refinement', v => f(this.parse(v), (err: any) => new ValidationError({ expected: err, got: v })));
+  refine(f: (v: T, error: (e: any) => ValidationError) => T): RefinedType<T> {
+    return new RefinedType(this, v => f(this.parse(v), (err: any) => new ValidationError({ expected: err, got: v })));
   }
   and<T2>(t2: Type<T2>): IntersectionType<T, T2> { return intersection(this, t2); }
   or<T2>(t2: Type<T2>): UnionType<T, T2> { return union(this, t2); }
@@ -28,9 +28,8 @@ export class VType<T> extends Type<T> {
     super(name, validate);
     this.validate = validate;
   }
-  Vrefine(f: (v: T, error: (e: any) => ValidationError) => T): VType<T> {
-    const validate = v => f(this.parse(v), (err: any) => new ValidationError({ expected: err, got: v }));
-    return new VType('refinement', validate);
+  Vrefine(f: (v: T, error: (e: any) => ValidationError) => T): VRefinedType<T> {
+    return new VRefinedType(this, v => f(this.parse(v), (err: any) => new ValidationError({ expected: err, got: v })));
   }
   isValid(v: mixed): boolean {
     try { this.validate(v); return true; } catch (e) { if (e instanceof ValidationError) return false; throw e; }
@@ -200,6 +199,24 @@ export class ChainType<T> extends Type<T> {
     this.left = left;
     this.right = right;
   }
+}
+
+export class RefinedType<T> extends Type<T> {
+  base: Type<T>;
+  constructor(base: Type<T>, f: (v: mixed) => T) {
+    super('refined', f);
+    this.base = base;
+  }
+  revalidate(): Type<T> { return new Type('revalidated', v => this.base.parse(this.parse(v))); }
+}
+
+export class VRefinedType<T> extends VType<T> {
+  base: VType<T>;
+  constructor(base: VType<T>, f: (v: mixed) => T) {
+    super('refined', f);
+    this.base = base;
+  }
+  revalidate(): VType<T> { return new VType('revalidated', v => this.base.validate(this.validate(v))); }
 }
 
 export type Errors = {[key: string]: ValidationError };

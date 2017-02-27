@@ -15,7 +15,7 @@ describe('readme code', () => {
       d: string.refine((s, error) => { // refinements must return the same type
         if (/el/.test(s)) return s;
         throw error(/el/); // this throws proper error
-      }),
+      }).revalidate(), // add a revalidate if want to be sure not changed type during refinement
       e: string.to(s => new Date(s)) // with .to() you can convert types
     });
 
