@@ -4,17 +4,32 @@ export class Type<T> {
   name: string;
   validate: (value: mixed) => T;
   parse: (value: mixed) => T;
+  revalidate: ?boolean;
   constructor(name: string, validate: (value: mixed) => T, parse: ?(value: mixed) => T) {
     this.name = name;
     this.validate = validate;
     this.parse = parse || validate;
   }
+  isValid(v: mixed): boolean {
+    try { this.validate(v); return true; } catch (e) { if (e instanceof ValidationError) return false; throw e; }
+  }
   refine(f: (v: T, error: (e: any) => ValidationError) => T): Type<T> {
-    return new Type('refinement', v => f(this.validate(v), (err: any) => new ValidationError({ expected: err, got: v })));
+    const parseValidate = v => f(this.validate(v), (err: any) => new ValidationError({ expected: err, got: v }));
+    return new Type('refinement', parseValidate, parseValidate);
+  }
+  to<T2>(f: (v: T, error: (e: any) => ValidationError) => T2): Type<T2> {
+    return new Type('trasformation', v => f(this.validate(v), (err: any) => new ValidationError({ expected: err, got: v })));
   }
   and<T2>(t2: Type<T2>): IntersectionType<T, T2> { return intersection(this, t2); }
   or<T2>(t2: Type<T2>): UnionType<T, T2> { return union(this, t2); }
   optional(): OptionalType<T> { return optional(this); }
+  validateResult(v: mixed): { value: T } | { error: ValidationError } {
+    try { return { value: this.validate(v) }; } catch (e) { if (e instanceof ValidationError) return { error: e }; throw e; }
+  }
+  parseResult(v: mixed): { value: T } | { error: ValidationError } {
+    try { return { value: this.parse(v) }; } catch (e) { if (e instanceof ValidationError) return { error: e }; throw e; }
+  }
+
 }
 
 export class CustomErrorType<T> extends Type<T> {}
@@ -76,7 +91,7 @@ export class MappingType<K, V> extends Type<{[key: K]: V}> {
 
 export type SchemaProps = {[key: string]: Type<any>};
 export type SchemaType<P> = $ObjMap<P, <T>(v: Type<T>) => T>;
-export class ObjectType<S: SchemaProps, T: SchemaType<S>> extends Type<T> {
+export class ObjectType<S: {[key: string]: Type<any>}, T: $ObjMap<S, <F>(v: Type<F>) => F>> extends Type<T> {
   schema: S;
   constructor(schema: S, validate: (value: mixed) => T, parse: (value: mixed) => T) {
     super('object', validate, parse);
@@ -84,7 +99,7 @@ export class ObjectType<S: SchemaProps, T: SchemaType<S>> extends Type<T> {
   }
 }
 
-export class ObjectExactType<S: SchemaProps, T: SchemaType<S>> extends Type<T> {
+export class ObjectExactType<S: {[key: string]: Type<any>}, T: $ObjMap<S, <F>(v: Type<F>) => F>> extends Type<T> {
   schema: S;
   constructor(schema: S, validate: (value: mixed) => T, parse: (value: mixed) => T) {
     super('objectExact', validate, parse);
@@ -206,7 +221,7 @@ export function arrayOf<T>(t: Type<T>): ArrayOfType<T> {
     const result: Array<T> = [];
     const errors: Errors = {};
     a.forEach((item, index) => {
-      try { result[index] = t.validate(item); } catch (e) {
+      try { result[index] = t.parse(item); } catch (e) {
         if (e instanceof ValidationError) errors[String(index)] = (e: ValidationError);
         else throw e;
       }
@@ -275,8 +290,8 @@ export function mapping<K: string, V>(keys: Type<K>, values: Type<V>): MappingTy
     for (const key of ks) {
       const value = o[key];
       let kv; let vv; let ke; let ve;
-      try { kv = keys.validate(key); } catch (e) { if (e instanceof ValidationError) ke = e; else throw e; }
-      try { vv = values.validate(value); } catch (e) { if (e instanceof ValidationError) ve = e; else throw e; }
+      try { kv = keys.parse(key); } catch (e) { if (e instanceof ValidationError) ke = e; else throw e; }
+      try { vv = values.parse(value); } catch (e) { if (e instanceof ValidationError) ve = e; else throw e; }
       if (ke || ve) { errors[key] = { key: ke, value: ve }; }
       else if (kv) result[kv] = vv;
     }
@@ -295,7 +310,7 @@ export function unionFromObjectKeys<O: Object>(o: O): Type<$Keys<O>> {
   return en;
 }
 
-export function object<S: SchemaProps>(s: S): ObjectType<S, SchemaType<S>> {
+export function object<S: {[key: string]: Type<any>}>(s: S): ObjectType<S, $ObjMap<S, <F>(v: Type<F>) => F>> {
   const os = new ObjectType(s, v => {
     const o = objectType.validate(v);
     const keys = Object.keys(s);
@@ -311,7 +326,7 @@ export function object<S: SchemaProps>(s: S): ObjectType<S, SchemaType<S>> {
     const result = {};
     const errors = {};
     for (const key of keys) {
-      try { result[key] = s[key].validate(o[key]); } catch (e) { if (e instanceof ValidationError) errors[key] = e; else throw e; }
+      try { result[key] = s[key].parse(o[key]); } catch (e) { if (e instanceof ValidationError) errors[key] = e; else throw e; }
     }
     if (Object.getOwnPropertyNames(errors).length) throw new ValidationError({ expected: os, got: o, errors });
     return result;
@@ -319,7 +334,7 @@ export function object<S: SchemaProps>(s: S): ObjectType<S, SchemaType<S>> {
   return os;
 }
 
-export function objectExact<S: SchemaProps>(s: S): ObjectExactType<S, SchemaType<$Exact<S>>> {
+export function objectExact<S: {[key: string]: Type<any>}>(s: S): ObjectExactType<S, $Exact<$ObjMap<S, <F>(v: Type<F>) => F>>> {
   const oes = new ObjectExactType(s, v => {
     const o = objectType.validate(v);
     const keys = Object.keys(o);
@@ -337,7 +352,7 @@ export function objectExact<S: SchemaProps>(s: S): ObjectExactType<S, SchemaType
     const errors = {};
     for (const key of keys) {
       if (!s.hasOwnProperty(key)) { errors[key] = new ValidationError({ expected: noProperty, got: o[key] }); }
-      else try { result[key] = s[key].validate(o[key]); } catch (e) { if (e instanceof ValidationError) errors[key] = e; else throw e; }
+      else try { result[key] = s[key].parse(o[key]); } catch (e) { if (e instanceof ValidationError) errors[key] = e; else throw e; }
     }
     if (Object.getOwnPropertyNames(errors).length) throw new ValidationError({ expected: oes, got: o, errors });
     return result;
@@ -372,7 +387,7 @@ export function tuple<S:TupleSchemaProps>(s: S): TupleType<TupleSchemaType<S>> {
     const errors: Errors = {};
     for (let i = 0; i < s.length; i++) {
       try {
-        result[i] = s[i].validate(a[i]);
+        result[i] = s[i].parse(a[i]);
       } catch (e) {
         if (e instanceof ValidationError) errors[String(i)] = (e: ValidationError);
         else throw e;

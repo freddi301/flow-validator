@@ -18,31 +18,41 @@ Object validation with proper flow types.
 ## Usage
 
 ```javascript
-import { arrayOf, string, number, instanceof, object } from 'flow-validator';
+import { arrayOf, string, number, instanceof, object, Type } from 'flow-validator';
 
-// { a: string, b: number, c: Array<string | number | Date> }
+// { a: string, b: number, c: Array<string | number | Date>, d: string, e: Date }
 const Schema = object({
   a: string,
   b: number.optional(),
   c: arrayOf(string.or(number).or(instanceOf(Date))),
-  d: string.refine((s, error) => {
+  d: string.refine((s, error) => { // refinements must return the same type
     if (/el/.test(s)) return s;
     throw error(/el/); // this throws proper error
-  })
+  }),
+  e: string.to(s => new Date(s)) // with .to() you can convert types
 })
 
 const toBeValidated = {
   a: 'hi'.
   c: [1, new Date, '2017'],
-  d: 'hello'
+  d: 'hello',
+  e: 'Mon Feb 27 2017 10:00:15 GMT-0800 (PST)'
 }
 
 // validate input object, returns original object if valid, throws otherwise
+// WARNING: if .validate() is used with type converters or .to() types,
+// the type will not be right, as validate return original input, meanwhile .to() produces a new object
 Schema.validate(toBeValidated) === toBeValidated // = true
 
 // same as validate, but it make a copy in case of: arrayOf, tuple, mapping, object, objectExact
 // it can be used when using refinemnts that return not the original value
+// and with .to() for conversions
 Schema.parse(toBeValidated) === toBeValidated // = false
+
+// shortcuts
+Schema.isValid(toBeValidated) // : boolean
+Schema.validateResult(toBeValidated) // : { value: ... } | { error: ... }
+Schema.parseResult(toBeValidated) // : { value: ... } | { error: ... }
 
 // to get JSON error report
 try { Schema.validate() } catch (e) { console.log(e.toJSON()); }
@@ -89,11 +99,20 @@ npm run doc:serve
 # Feature Requests Wanted
 (open issue, include examples or links)
 
+# Work around for Flow bugs
+
+```javascript
+// sometimes flow will not remember types, ex:
+const x = object({ x: number.to(n => new Date(n)) }).parse() // unknown type
+
+// solution
+const x: Type<Date> = number.to(n => new Date(n));
+const y = object({ x }).parse(); // : { x: Date }
+```
+
 # TODO
 
 - [ ] literal values
-- [ ] .to() transform
-- [ ] .refine.revalidate() .to().revalidate() revalidate after trasformation
 - [ ] .validateAsync() .parseAsync() promise
 - [ ] common controls
 - [ ] generate documentation from types (md, html)
@@ -105,6 +124,7 @@ npm run doc:serve
 - [ ] json schema gen & validation
 - [ ] performance comparison
 - [ ] optimize, use lodash, cache optional() singleton and frequently used types
+- [ ] .refine().revalidate() .to().revalidate() revalidate after trasformation
 
 ---
 
