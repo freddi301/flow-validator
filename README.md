@@ -56,10 +56,12 @@ Schema.parseResult(toBeValidated) // : { value: ... } | { error: ... }
 
 // to get JSON error report
 try { Schema.validate() } catch (e) { console.log(e.toJSON()); }
+Schema.validateResult().toJSON()
 
 ```
 
 for use outside of babel environment ```require('/node_modules/flow-validator/flow-validator.js')```
+for minified version ```require('/node_modules/flow-validator/flow-validator.min.js')```
 
 # Implemented types / combinators
 
@@ -112,12 +114,11 @@ const y = object({ x }).parse(); // : { x: Date }
 
 # TODO
 
-- [ ] literal values
-- [ ] fix validate/parse [.refine() has validate+parse] [.to() has parse]
+- [ ] fix validate/parse [.refine() has validate+parse] [.to() has parse] (cannot mix .to() types if want retain .validate())
 - [ ] common controls
+- [ ] include https://github.com/hapijs/joi/blob/master/API.md features
 - [ ] .validateAsync() .parseAsync() promise
 - [ ] generate documentation from types (md, html, jsonschema)
-- [ ] include https://github.com/hapijs/joi/blob/master/API.md features
 - [ ] doc examples for all
 - [ ] test 100%
 - [ ] doc 100%
@@ -126,6 +127,7 @@ const y = object({ x }).parse(); // : { x: Date }
 - [ ] performance comparison
 - [ ] optimize, use lodash, cache optional() singleton and frequently used types
 - [ ] .refine().revalidate() .to().revalidate() revalidate after trasformation
+- [ ] literal values
 
 ---
 
