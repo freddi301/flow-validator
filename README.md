@@ -18,7 +18,7 @@ Object validation with proper flow types.
 ## Usage
 
 ```javascript
-import { arrayOf, string, number, instanceof, object, Type } from 'flow-validator';
+import { arrayOf, string, number, object, instanceOf, Type, Vobject } from '../src';
 
 // { a: string, b: number, c: Array<string | number | Date>, d: string, e: Date }
 const Schema = object({
@@ -40,9 +40,10 @@ const toBeValidated = {
 };
 
 // validate input object, returns original object if valid, throws otherwise
-// WARNING: if .validate() is used with type converters or .to() types,
-// the type will not be right, as validate return original input, meanwhile .to() produces a new object
-Schema.validate(toBeValidated) === toBeValidated; // = true
+// VType object has .validate() method that returns original object
+// arrayOf, tuple, mapping, object, objectExact ha V prefixed variants,
+// and can't contain validators that change input
+Vobject({ a: string }).validate({ a: 'hello' }) === toBeValidated; // = true
 
 // same as validate, but it make a copy in case of: arrayOf, tuple, mapping, object, objectExact
 // it can be used when using refinemnts that return not the original value
@@ -50,12 +51,15 @@ Schema.validate(toBeValidated) === toBeValidated; // = true
 Schema.parse(toBeValidated) === toBeValidated; // = false
 
 // shortcuts
-Schema.isValid(toBeValidated); // : boolean
-Schema.validateResult(toBeValidated); // : { value: ... } | { error: ... }
+Vobject({ a: string }).isValid({ a: 'hello' }); // : boolean
+Vobject({ a: string }).validateResult({ a: 'hello' }); // : { value: ... } | { error: ... }
 Schema.parseResult(toBeValidated); // : { value: ... } | { error: ... }
 
+// you can chain validators, to reuse them or check if your custom type converter works
+string.to(s => new Date(s)).chain(instanceOf(Date));
+
 // to get JSON serializable error report
-try { Schema.validate(); } catch (e) { console.log(e.toJSON()); } // eslint-disable-line no-console
+try { Schema.parse(); } catch (e) { console.log(e.toJSON()); } // eslint-disable-line no-console
 
 // sometimes flow will not remember types, ex:
 object({ x: number.to(n => new Date(n)) }).parse({ x: 4 }); // unknown type
@@ -108,9 +112,6 @@ npm run doc:serve
 
 # TODO
 
-- [ ] fix validate/parse [.refine() has validate+parse] [.to() has parse] (cannot mix .to() types if want retain .validate())
-- [ ] two classes Type { parse() to() refine() } <- VType extends Type { validate() } (dont forget helpers .isValid() .<method>Result())
-- [ ] fix .to().end(instaceOf())
 - [ ] readme += new type example
 - [ ] common controls
 - [ ] include https://github.com/hapijs/joi/blob/master/API.md features

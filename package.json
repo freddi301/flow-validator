@@ -8,6 +8,7 @@
     "flow": "flow check src && flow check test",
     "checkdeps": "nsp check",
     "test": "mocha",
+    "test:file": "mocha",
     "coverage": "nyc mocha",
     "coveralls": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "build": "babel src --out-file ./flow-validator.js --source-maps",

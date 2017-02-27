@@ -3,7 +3,7 @@
 
 // import { expect } from 'chai';
 
-import { arrayOf, string, number, object, instanceOf, Type } from '../src';
+import { arrayOf, string, number, object, instanceOf, Type, Vobject } from '../src';
 
 describe('readme code', () => {
   it('works', () => {
@@ -27,9 +27,10 @@ describe('readme code', () => {
     };
 
     // validate input object, returns original object if valid, throws otherwise
-    // WARNING: if .validate() is used with type converters or .to() types,
-    // the type will not be right, as validate return original input, meanwhile .to() produces a new object
-    Schema.validate(toBeValidated) === toBeValidated; // = true
+    // VType object has .validate() method that returns original object
+    // arrayOf, tuple, mapping, object, objectExact ha V prefixed variants,
+    // and can't contain validators that change input
+    Vobject({ a: string }).validate({ a: 'hello' }) === toBeValidated; // = true
 
     // same as validate, but it make a copy in case of: arrayOf, tuple, mapping, object, objectExact
     // it can be used when using refinemnts that return not the original value
@@ -37,12 +38,15 @@ describe('readme code', () => {
     Schema.parse(toBeValidated) === toBeValidated; // = false
 
     // shortcuts
-    Schema.isValid(toBeValidated); // : boolean
-    Schema.validateResult(toBeValidated); // : { value: ... } | { error: ... }
+    Vobject({ a: string }).isValid({ a: 'hello' }); // : boolean
+    Vobject({ a: string }).validateResult({ a: 'hello' }); // : { value: ... } | { error: ... }
     Schema.parseResult(toBeValidated); // : { value: ... } | { error: ... }
 
+    // you can chain validators, to reuse them or check if your custom type converter works
+    string.to(s => new Date(s)).chain(instanceOf(Date));
+
     // to get JSON serializable error report
-    try { Schema.validate(); } catch (e) { console.log(e.toJSON()); } // eslint-disable-line no-console
+    try { Schema.parse(); } catch (e) { console.log(e.toJSON()); } // eslint-disable-line no-console
 
     // sometimes flow will not remember types, ex:
     object({ x: number.to(n => new Date(n)) }).parse({ x: 4 }); // unknown type
