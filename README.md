@@ -40,6 +40,10 @@ const toBeValidated = {
 // validate input object, returns original object if valid, throws otherwise
 Schema.validate(toBeValidated) === toBeValidated // = true
 
+// same as validate, but it make a copy in case of: arrayOf, tuple, mapping, object, objectExact
+// it can be used when using refinemnts that return not the original value
+Schema.parse(toBeValidated) === toBeValidated // = false
+
 // to get JSON error report
 try { Schema.validate() } catch (e) { console.log(e.toJSON()); }
 
@@ -88,8 +92,8 @@ npm run doc:serve
 # TODO
 
 - [ ] literal values
-- [ ] .parse() copy on validate for (arrayOf, tuple, mapping, object, objectExact)
 - [ ] .to() transform
+- [ ] .refine.revalidate() .to().revalidate() revalidate after trasformation
 - [ ] .validateAsync() .parseAsync() promise
 - [ ] common controls
 - [ ] generate documentation from types (md, html)
@@ -97,6 +101,7 @@ npm run doc:serve
 - [ ] doc examples for all
 - [ ] test 100%
 - [ ] doc 100%
+- [ ] better flow coverage where possible
 - [ ] json schema gen & validation
 - [ ] performance comparison
 - [ ] optimize, use lodash, cache optional() singleton and frequently used types

@@ -30,10 +30,10 @@ describe('error JSON', () => {
   });
   it('works with custom error', () => {
     try {
-      string.refine((s, error) => { if (s === 'hello') return s; throw error('must be hello') }).validate('helo')
+      string.refine((s, error) => { if (s === 'hello') return s; throw error('must be hello'); }).validate('helo');
     } catch (e) {
       expect(e).instanceof(ValidationError);
-      expect(JSON.parse(JSON.stringify(e.toJSON()))).to.deep.equal({ expected: 'must be hello', got: 'helo' })
+      expect(JSON.parse(JSON.stringify(e.toJSON()))).to.deep.equal({ expected: 'must be hello', got: 'helo' });
     }
   });
 

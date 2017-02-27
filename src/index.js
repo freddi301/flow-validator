@@ -3,7 +3,12 @@
 export class Type<T> {
   name: string;
   validate: (value: mixed) => T;
-  constructor(name: string, validate: (value: mixed) => T) { this.name = name; this.validate = validate; }
+  parse: (value: mixed) => T;
+  constructor(name: string, validate: (value: mixed) => T, parse: ?(value: mixed) => T) {
+    this.name = name;
+    this.validate = validate;
+    this.parse = parse || validate;
+  }
   refine(f: (v: T, error: (e: any) => ValidationError) => T): Type<T> {
     return new Type('refinement', v => f(this.validate(v), (err: any) => new ValidationError({ expected: err, got: v })));
   }
@@ -26,7 +31,10 @@ export class ClassOfType<T> extends Type<T> {
 
 export class ArrayOfType<T> extends Type<Array<T>> {
   type: Type<T>;
-  constructor(t: Type<T>, validate: (value: mixed) => Array<T>) { super('arrayOf', validate); this.type = t; }
+  constructor(t: Type<T>, validate: (value: mixed) => Array<T>, parse: (value: mixed) => Array<T>) {
+    super('arrayOf', validate, parse);
+    this.type = t;
+  }
 }
 
 export class IntersectionType<A, B> extends Type<A & B> {
@@ -59,8 +67,8 @@ export class OptionalType <T> extends Type<?T> {
 export class MappingType<K, V> extends Type<{[key: K]: V}> {
   keys: Type<K>;
   values: Type<V>;
-  constructor(keys: Type<K>, values: Type<V>, validate: (value: mixed) => {[key: K]: V}) {
-    super('mapping', validate);
+  constructor(keys: Type<K>, values: Type<V>, validate: (value: mixed) => {[key: K]: V}, parse: (value: mixed) => {[key: K]: V}) {
+    super('mapping', validate, parse);
     this.keys = keys;
     this.values = values;
   }
@@ -70,16 +78,16 @@ export type SchemaProps = {[key: string]: Type<any>};
 export type SchemaType<P> = $ObjMap<P, <T>(v: Type<T>) => T>;
 export class ObjectType<S: SchemaProps, T: SchemaType<S>> extends Type<T> {
   schema: S;
-  constructor(schema: S, validate: (value: mixed) => T) {
-    super('object', validate);
+  constructor(schema: S, validate: (value: mixed) => T, parse: (value: mixed) => T) {
+    super('object', validate, parse);
     this.schema = schema;
   }
 }
 
 export class ObjectExactType<S: SchemaProps, T: SchemaType<S>> extends Type<T> {
   schema: S;
-  constructor(schema: S, validate: (value: mixed) => T) {
-    super('objectExact', validate);
+  constructor(schema: S, validate: (value: mixed) => T, parse: (value: mixed) => T) {
+    super('objectExact', validate, parse);
     this.schema = schema;
   }
 }
@@ -88,13 +96,14 @@ export type TupleSchemaProps = Array<Type<any>>;
 export type TupleSchemaType<P> = $TupleMap<P, <T>(v: Type<T>) => T>;
 export class TupleType<T> extends Type<T> {
   schema: TupleSchemaProps;
-  constructor(schema: TupleSchemaProps, validate: (value: mixed) => T) {
-    super('tuple', validate);
+  constructor(schema: TupleSchemaProps, validate: (value: mixed) => T, parse: (value: mixed) => T) {
+    super('tuple', validate, parse);
     this.schema = schema;
   }
 }
 
-export type ValidationErrorPayload = { expected: Type<any>, got: any, errors?: {[key: string]: ValidationError } }
+export type Errors = {[key: string]: ValidationError };
+export type ValidationErrorPayload = { expected: Type<any>, got: mixed, errors?: Errors };
 export class ValidationError extends Error {
   payload: ValidationErrorPayload;
   constructor(payload: ValidationErrorPayload) { super('ValidationError'); this.payload = payload; }
@@ -102,7 +111,7 @@ export class ValidationError extends Error {
     if (this.payload.errors) {
       const errors = {};
       for (const key of Object.keys(this.payload.errors)) { errors[key] = this.payload.errors[key].toJSON(); }
-      return { expected: this.payload.expected, got: this.payload.got, errors }
+      return { expected: this.payload.expected, got: this.payload.got, errors };
     }
     return this.payload;
   }
@@ -182,16 +191,28 @@ export function classOf<T>(c: Class<T>): ClassOfType<Class<T>> {
 export function arrayOf<T>(t: Type<T>): ArrayOfType<T> {
   const aof = new ArrayOfType(t, v => {
     const a = arrayType.validate(v);
-    const errors = {};
+    const errors: Errors = {};
     a.forEach((item, index) => {
       try { t.validate(item); } catch (e) {
-        if (e instanceof ValidationError) errors[index] = e;
+        if (e instanceof ValidationError) errors[String(index)] = (e: ValidationError);
         else throw e;
       }
     });
     if (Object.getOwnPropertyNames(errors).length) throw new ValidationError({ expected: aof, got: v, errors });
     return ((a: any): Array<T>); // eslint-disable-line flowtype/no-weak-types
     // return a.map(t.validate); this is type correct
+  }, v => {
+    const a = arrayType.validate(v);
+    const result: Array<T> = [];
+    const errors: Errors = {};
+    a.forEach((item, index) => {
+      try { result[index] = t.validate(item); } catch (e) {
+        if (e instanceof ValidationError) errors[String(index)] = (e: ValidationError);
+        else throw e;
+      }
+    });
+    if (Object.getOwnPropertyNames(errors).length) throw new ValidationError({ expected: aof, got: v, errors });
+    return result;
   });
   return aof;
 }
@@ -246,6 +267,21 @@ export function mapping<K: string, V>(keys: Type<K>, values: Type<V>): MappingTy
     }
     if (Object.getOwnPropertyNames(errors).length) throw new ValidationError({ expected: m, got: v, errors });
     return ((v: any): {[key: K]: V}); // eslint-disable-line flowtype/no-weak-types
+  }, v => {
+    const o = objectType.validate(v);
+    const ks = Object.keys(o);
+    const result = {};
+    const errors = {};
+    for (const key of ks) {
+      const value = o[key];
+      let kv; let vv; let ke; let ve;
+      try { kv = keys.validate(key); } catch (e) { if (e instanceof ValidationError) ke = e; else throw e; }
+      try { vv = values.validate(value); } catch (e) { if (e instanceof ValidationError) ve = e; else throw e; }
+      if (ke || ve) { errors[key] = { key: ke, value: ve }; }
+      else if (kv) result[kv] = vv;
+    }
+    if (Object.getOwnPropertyNames(errors).length) throw new ValidationError({ expected: m, got: v, errors });
+    return result;
   });
   return m;
 }
@@ -265,38 +301,48 @@ export function object<S: SchemaProps>(s: S): ObjectType<S, SchemaType<S>> {
     const keys = Object.keys(s);
     const errors = {};
     for (const key of keys) {
-      try { s[key].validate(o[key]) } catch (e) { if (e instanceof ValidationError) errors[key] = e; else throw e; }
+      try { s[key].validate(o[key]); } catch (e) { if (e instanceof ValidationError) errors[key] = e; else throw e; }
     }
     if (Object.getOwnPropertyNames(errors).length) throw new ValidationError({ expected: os, got: o, errors });
     return o;
+  }, v => {
+    const o = objectType.validate(v);
+    const keys = Object.keys(s);
+    const result = {};
+    const errors = {};
+    for (const key of keys) {
+      try { result[key] = s[key].validate(o[key]); } catch (e) { if (e instanceof ValidationError) errors[key] = e; else throw e; }
+    }
+    if (Object.getOwnPropertyNames(errors).length) throw new ValidationError({ expected: os, got: o, errors });
+    return result;
   });
   return os;
 }
 
 export function objectExact<S: SchemaProps>(s: S): ObjectExactType<S, SchemaType<$Exact<S>>> {
-  const os = new ObjectExactType(s, v => {
+  const oes = new ObjectExactType(s, v => {
     const o = objectType.validate(v);
     const keys = Object.keys(o);
     const errors = {};
     for (const key of keys) {
-      if (!s.hasOwnProperty(key)) { errors[key] = new ValidationError({ expected: noProperty, got: o[key] }) }
-      else try { s[key].validate(o[key]) } catch (e) { if (e instanceof ValidationError) errors[key] = e; else throw e; }
+      if (!s.hasOwnProperty(key)) { errors[key] = new ValidationError({ expected: noProperty, got: o[key] }); }
+      else try { s[key].validate(o[key]); } catch (e) { if (e instanceof ValidationError) errors[key] = e; else throw e; }
     }
-    if (Object.getOwnPropertyNames(errors).length) throw new ValidationError({ expected: os, got: o, errors });
+    if (Object.getOwnPropertyNames(errors).length) throw new ValidationError({ expected: oes, got: o, errors });
     return o;
+  }, v => {
+    const o = objectType.validate(v);
+    const keys = Object.keys(o);
+    const result = {};
+    const errors = {};
+    for (const key of keys) {
+      if (!s.hasOwnProperty(key)) { errors[key] = new ValidationError({ expected: noProperty, got: o[key] }); }
+      else try { result[key] = s[key].validate(o[key]); } catch (e) { if (e instanceof ValidationError) errors[key] = e; else throw e; }
+    }
+    if (Object.getOwnPropertyNames(errors).length) throw new ValidationError({ expected: oes, got: o, errors });
+    return result;
   });
-  return os;
-}
-
-function checkTuple(tupleType, v: mixed) {
-  const types = tupleType.schema;
-  const a = arrayType.validate(v);
-  const errors = {};
-  for (let i = 0; i < types.length; i++) {
-    try { types[i].validate(a[i]) } catch (e) { if (e instanceof ValidationError) errors[i] = e; else throw e; }
-  }
-  if (Object.getOwnPropertyNames(errors).length) throw new ValidationError({ expected: tupleType, got: a, errors });
-  return a;
+  return oes;
 }
 
 declare function tuple<A, B, C, D, E, F>(types: [Type<A>, Type<B>, Type<C>, Type<E>, Type<F>]) : TupleType<[A, B, C, E]>; // eslint-disable-line no-redeclare
@@ -307,6 +353,33 @@ declare function tuple<A, B>(types: [Type<A>, Type<B>]) : TupleType<[A, B]>; // 
 declare function tuple<A>(types: [Type<A>]) : TupleType<[A]>; // eslint-disable-line no-redeclare
 
 export function tuple<S:TupleSchemaProps>(s: S): TupleType<TupleSchemaType<S>> { // eslint-disable-line no-redeclare
-  const tt = new TupleType(s, v => checkTuple(tt, v));
+  const tt = new TupleType(s, v => {
+    const a = arrayType.validate(v);
+    const errors: Errors = {};
+    for (let i = 0; i < s.length; i++) {
+      try {
+        s[i].validate(a[i]);
+      } catch (e) {
+        if (e instanceof ValidationError) errors[String(i)] = (e: ValidationError);
+        else throw e;
+      }
+    }
+    if (Object.getOwnPropertyNames(errors).length) throw new ValidationError({ expected: tt, got: a, errors });
+    return a;
+  }, v => {
+    const a = arrayType.validate(v);
+    const result = [];
+    const errors: Errors = {};
+    for (let i = 0; i < s.length; i++) {
+      try {
+        result[i] = s[i].validate(a[i]);
+      } catch (e) {
+        if (e instanceof ValidationError) errors[String(i)] = (e: ValidationError);
+        else throw e;
+      }
+    }
+    if (Object.getOwnPropertyNames(errors).length) throw new ValidationError({ expected: tt, got: a, errors });
+    return result;
+  });
   return tt;
 }

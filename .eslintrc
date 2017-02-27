@@ -12,4 +12,7 @@
     "node",
     "es6"
   },
+  "rules": {
+    "semi": ["error", "always"]
+  }
 }
