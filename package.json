@@ -11,8 +11,9 @@
     "coverage": "nyc mocha",
     "coveralls": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "build": "babel src --out-file ./flow-validator.js --source-maps",
+    "build:min": "uglifyjs ./flow-validator.js -o ./flow-validator.min.js --source-map ./flow-validator.min.js.map -c -m",
     "precommit": "npm run eslint && npm run flow && npm run checkdeps && npm test && npm run coverage",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build && npm run build:min"
   },
   "keywords": [
     "flow",
@@ -50,6 +51,7 @@
     "istanbul": "0.4.5",
     "mocha": "3.2.0",
     "nsp": "2.6.2",
-    "nyc": "10.1.2"
+    "nyc": "10.1.2",
+    "uglify-js": "2.7.5"
   }
 }

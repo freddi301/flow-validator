@@ -277,15 +277,3 @@ export function objectExact<S:SchemaProps>(s: S): ObjectExactType<S, SchemaType<
   });
   return os;
 }
-
-/*
-const X = object({ a: string, x: number });
-const x = X.validate({})
-const y: { a: string, x: number } = x;
-const z: { a: Array<Date>, x: number} = x;
-const M = object({ x: X, s: number });
-const m = M.validate();
-const e = string.or(number).or(boolean).optional().validate();
-const bb = arrayOf(string.optional())
-const nu = isNull.validate();
-*/

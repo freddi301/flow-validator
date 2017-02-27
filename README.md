@@ -18,34 +18,31 @@ Object validation with proper flow types.
 ## Usage
 
 ```javascript
-import {
-  arrayOf, string, number,
-  instanceof, union, object,
-  ValidationError
-} from 'flow-validator'
+import { arrayOf, string, number, instanceof, object } from 'flow-validator';
 
-// Array<string | Date>
-const Dates = arrayOf(union(string, instanceOf(Date)));
-const validDates = Dates.validate([1, new Date, '10/2']); // throws
+// { a: string, b: number, c: Array<string | number | Date> }
+const Schema = object({
+  a: string,
+  b: number.optional(),
+  c: arrayOf(string.or(number).or(instanceOf(Date))),
+  d: string.refine((s, error) => {
+    if (/el/.test(s)) return s;
+    throw error(/el/); // this throws proper error
+  })
+})
 
-const RefinedString = string.refine((s, error) => {
-  if (/el/.test(s)) return s;
-  throw error(/el/); // this throws proper error
-});
-const validRefinedString = RefinedString.validate('hello');
+const toBeValidated = {
+  a: 'hi'.
+  c: [1, new Date, '2017'],
+  d: 'hello'
+}
 
-// { a: string, b: number }
-object({ a: string, b: number }).validate({}) // throws error
-
-// fluent syntax
-// number | string | boolean
-string.or(number).or(boolean)
-
-// Array<?string>
-arrayOf(string.optional())
+// validate input object, returns original object if valid, throws otherwise
+Schema.validate(toBeValidated) === toBeValidated // = true
 
 // to get JSON error report
-try { string.validate() } catch (e) { console.log(e.toJSON()); }
+try { Schema.validate() } catch (e) { console.log(e.toJSON()); }
+
 ```
 
 for use outside of babel environment ```require('/node_modules/flow-validator/flow-validator.js')```
@@ -81,7 +78,6 @@ for use outside of babel environment ```require('/node_modules/flow-validator/fl
 
 # TODO
 
-- [ ] minified build
 - [ ] tuple
 - [ ] literal values
 - [ ] include https://github.com/hapijs/joi/blob/master/API.md features
