@@ -84,6 +84,16 @@ export class ObjectExactType<S: SchemaProps, T: SchemaType<S>> extends Type<T> {
   }
 }
 
+export type TupleSchemaProps = Array<Type<any>>;
+export type TupleSchemaType<P> = $TupleMap<P, <T>(v: Type<T>) => T>;
+export class TupleType<T> extends Type<T> {
+  schema: TupleSchemaProps;
+  constructor(schema: TupleSchemaProps, validate: (value: mixed) => T) {
+    super('tuple', validate);
+    this.schema = schema;
+  }
+}
+
 export type ValidationErrorPayload = { expected: Type<any>, got: any, errors?: {[key: string]: ValidationError } }
 export class ValidationError extends Error {
   payload: ValidationErrorPayload;
@@ -249,7 +259,7 @@ export function unionFromObjectKeys<O: Object>(o: O): Type<$Keys<O>> {
   return en;
 }
 
-export function object<S:SchemaProps>(s: S): ObjectType<S, SchemaType<S>> {
+export function object<S: SchemaProps>(s: S): ObjectType<S, SchemaType<S>> {
   const os = new ObjectType(s, v => {
     const o = objectType.validate(v);
     const keys = Object.keys(s);
@@ -263,7 +273,7 @@ export function object<S:SchemaProps>(s: S): ObjectType<S, SchemaType<S>> {
   return os;
 }
 
-export function objectExact<S:SchemaProps>(s: S): ObjectExactType<S, SchemaType<$Exact<S>>> {
+export function objectExact<S: SchemaProps>(s: S): ObjectExactType<S, SchemaType<$Exact<S>>> {
   const os = new ObjectExactType(s, v => {
     const o = objectType.validate(v);
     const keys = Object.keys(o);
@@ -276,4 +286,27 @@ export function objectExact<S:SchemaProps>(s: S): ObjectExactType<S, SchemaType<
     return o;
   });
   return os;
+}
+
+function checkTuple(tupleType, v: mixed) {
+  const types = tupleType.schema;
+  const a = arrayType.validate(v);
+  const errors = {};
+  for (let i = 0; i < types.length; i++) {
+    try { types[i].validate(a[i]) } catch (e) { if (e instanceof ValidationError) errors[i] = e; else throw e; }
+  }
+  if (Object.getOwnPropertyNames(errors).length) throw new ValidationError({ expected: tupleType, got: a, errors });
+  return a;
+}
+
+declare function tuple<A, B, C, D, E, F>(types: [Type<A>, Type<B>, Type<C>, Type<E>, Type<F>]) : TupleType<[A, B, C, E]>; // eslint-disable-line no-redeclare
+declare function tuple<A, B, C, D, E>(types: [Type<A>, Type<B>, Type<C>, Type<E>]) : TupleType<[A, B, C, E]>; // eslint-disable-line no-redeclare
+declare function tuple<A, B, C, D>(types: [Type<A>, Type<B>, Type<C>, Type<D>]) : TupleType<[A, B, C, D]>; // eslint-disable-line no-redeclare
+declare function tuple<A, B, C>(types: [Type<A>, Type<B>, Type<C>]) : TupleType<[A, B, C]>; // eslint-disable-line no-redeclare
+declare function tuple<A, B>(types: [Type<A>, Type<B>]) : TupleType<[A, B]>; // eslint-disable-line no-redeclare
+declare function tuple<A>(types: [Type<A>]) : TupleType<[A]>; // eslint-disable-line no-redeclare
+
+export function tuple<S:TupleSchemaProps>(s: S): TupleType<TupleSchemaType<S>> { // eslint-disable-line no-redeclare
+  const tt = new TupleType(s, v => checkTuple(tt, v));
+  return tt;
 }

@@ -87,17 +87,19 @@ npm run doc:serve
 
 # TODO
 
-- [ ] tuple
 - [ ] literal values
-- [ ] copy on validate
+- [ ] .parse() copy on validate for (arrayOf, tuple, mapping, object, objectExact)
+- [ ] .to() transform
+- [ ] .validateAsync() .parseAsync() promise
 - [ ] common controls
+- [ ] generate documentation from types (md, html)
 - [ ] include https://github.com/hapijs/joi/blob/master/API.md features
 - [ ] doc examples for all
 - [ ] test 100%
 - [ ] doc 100%
 - [ ] json schema gen & validation
-- [ ] promise
 - [ ] performance comparison
+- [ ] optimize, use lodash, cache optional() singleton and frequently used types
 
 ---
 
