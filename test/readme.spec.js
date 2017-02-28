@@ -7,6 +7,11 @@ import { arrayOf, string, number, object, instanceOf, Type, Vobject } from '../s
 
 describe('readme code', () => {
   it('works', () => {
+
+    const Person = object({ name: string, age: number.optional() });
+    const fred = Person.parse({ name: 'Fred', age: 89 });
+    console.log(fred); // eslint-disable-line no-console
+
     // { a: string, b: number, c: Array<string | number | Date>, d: string, e: Date }
     const Schema = object({
       a: string,
@@ -36,6 +41,7 @@ describe('readme code', () => {
     // it can be used when using refinemnts that return not the original value
     // and with .to() for conversions
     Schema.parse(toBeValidated) === toBeValidated; // = false
+    // deepEqual(Schema.parse(toBeValidated), toBeValidated); // = true
 
     // shortcuts
     Vobject({ a: string }).isValid({ a: 'hello' }); // : boolean
@@ -62,5 +68,8 @@ describe('readme code', () => {
     const str2arr = (s: string) => s.split('1');
     const nonSense = string.compose(str2num).compose(div).compose(num2str).compose(str2arr);
     nonSense.parseResult('1234567890'); // : Array<string>
+
+    // you can convert sync type to async one
+    string.async();
   });
 });

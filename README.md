@@ -49,6 +49,7 @@ Vobject({ a: string }).validate({ a: 'hello' }) === toBeValidated; // = true
 // it can be used when using refinemnts that return not the original value
 // and with .to() for conversions
 Schema.parse(toBeValidated) === toBeValidated; // = false
+// deepEqual(Schema.parse(toBeValidated), toBeValidated); // = true
 
 // shortcuts
 Vobject({ a: string }).isValid({ a: 'hello' }); // : boolean
@@ -121,12 +122,14 @@ npm run doc:serve
 
 # TODO
 
-- [ ] .validateAsync() .parseAsync() promise -> readme += alternate use: json graphql alternative
+- [ ] add sync versions of (arrayOf, tuple, mapping, object, objectExact) -> major release
+- [ ] readme += async validators
+- [ ] readme += alternate use: json graphql alternative
 - [ ] common controls
-- [ ] include https://github.com/hapijs/joi/blob/master/API.md features
-- [ ] generate documentation from types (md, html, jsonschema, blueprint, mson)
+- [ ] include https://github.com/hapijs/joi/blob/master/API.md features -> major release
+- [ ] generate documentation from types (md, html, jsonschema, blueprint, mson) -> release
 - [ ] doc examples for all
-- [ ] test 100%
+- [ ] test 100% -> major release
 - [ ] doc 100%
 - [ ] better flow coverage where possible
 - [ ] json schema validation
