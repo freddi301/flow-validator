@@ -108,8 +108,9 @@ for minified version ```require('/node_modules/flow-validator/flow-validator.min
 | all types | `mixed` | `isMixed` |
 | function | `(a: A) => B` | ✘ |
 
-# Technical documentation
+# [Technical documentation](https://freddi301.github.io/flow-validator/doc)
 
+for older versions:
 ```
 git clone https://github.com/freddi301/flow-validator.git
 cd flow-validator

@@ -1,0 +1,17 @@
+# Setup
+title:        flow-validator
+tagline:      Object validation with proper flow types
+baseurl:      "/flow-validator"
+paginate:     1
+
+# About/contact
+author:
+  name:       Frederik Batuna
+  url:        https://github.com/freddi301
+
+# Gems
+gems:
+  - jekyll-paginate
+
+#Others
+markdown: kramdown
