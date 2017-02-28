@@ -17,7 +17,8 @@ export class Type<T> {
   or<T2>(t2: Type<T2>): UnionType<T, T2> { return union(this, t2); }
   optional(): OptionalType<T> { return optional(this); }
   chain<T2>(t2: Type<T2>): ChainType<T2> { return new ChainType(this, t2); }
-  parseResult(v: mixed): { value?: T, error?: ValidationError } {
+  compose<T2>(f: (v: T) => T2): ComposeLeftType<T, T2> { return composeLeft(this, f);  }
+  parseResult(v: mixed): { value: T } | { error: ValidationError } {
     try { return { value: this.parse(v) }; } catch (e) { if (e instanceof ValidationError) return { error: e }; throw e; }
   }
 }
@@ -34,7 +35,7 @@ export class VType<T> extends Type<T> {
   isValid(v: mixed): boolean {
     try { this.validate(v); return true; } catch (e) { if (e instanceof ValidationError) return false; throw e; }
   }
-  validateResult(v: mixed): { value?: T, error?: ValidationError} {
+  validateResult(v: mixed): { value: T } | { error: ValidationError } {
     try { return { value: this.validate(v) }; } catch (e) { if (e instanceof ValidationError) return { error: e }; throw e; }
   }
   Vand<T2>(t2: VType<T2>): VIntersectionType<T, T2> { return Vintersection(this, t2); }
@@ -217,6 +218,26 @@ export class VRefinedType<T> extends VType<T> {
     this.base = base;
   }
   revalidate(): VType<T> { return new VType('revalidated', v => this.base.validate(this.validate(v))); }
+}
+
+export class ComposeLeftType<T, T2> extends Type<T2> {
+  left: Type<T>;
+  right: (v: T) => T2;
+  constructor(left: Type<T>, right: (v: T) => T2) {
+    super('composeLeft', v => right(left.parse(v)));
+    this.left = left;
+    this.right = right;
+  }
+}
+
+export class ComposeRightType<T, T2> extends Type<T2> {
+  left: (v: T) => T2;
+  right: Type<T>;
+  constructor(left: (v: T) => T2, right: Type<T>) {
+    super('compound', v => left(right.parse(v)));
+    this.left = left;
+    this.right = right;
+  }
 }
 
 export type Errors = {[key: string]: ValidationError };
@@ -558,4 +579,12 @@ export function Vtuple<S: Array<VType<any>>>(s: S): VTupleType<$TupleMap<S, <T>(
     return a;
   });
   return tt;
+}
+
+export function composeLeft<T1, T2>(a: Type<T1>, b: (v: T1) => T2): ComposeLeftType<T1, T2> { // a,b -> b(a())
+  return new ComposeLeftType(a, b);
+}
+
+export function composeRight<T1, T2>(a: (v: T1) => T2, b: Type<T1>): ComposeRightType<T1, T2> { // a,b -> a(b())
+  return new ComposeRightType(a, b);
 }

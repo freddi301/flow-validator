@@ -54,5 +54,13 @@ describe('readme code', () => {
     // solution
     const x2: Type<Date> = number.to(n => new Date(n));
     object({ x2 }).parse({ x2: 4 }); // : { x: Date }
+
+    // type-safe composition
+    const str2num = (s: string) => Number(s);
+    const div = (n: number) => n / 2;
+    const num2str = (n: number) => String(n);
+    const str2arr = (s: string) => s.split('1');
+    const nonSense = string.compose(str2num).compose(div).compose(num2str).compose(str2arr);
+    nonSense.parseResult('1234567890'); // : Array<string>
   });
 });

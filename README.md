@@ -18,6 +18,8 @@ Object validation with proper flow types.
 ## Usage
 
 ```javascript
+import { arrayOf, string, number, object, instanceOf, Type, Vobject } from 'flow-validator';
+
 // { a: string, b: number, c: Array<string | number | Date>, d: string, e: Date }
 const Schema = object({
   a: string,
@@ -65,9 +67,18 @@ object({ x: number.to(n => new Date(n)) }).parse({ x: 4 }); // unknown type
 // solution
 const x2: Type<Date> = number.to(n => new Date(n));
 object({ x2 }).parse({ x2: 4 }); // : { x: Date }
+
+// type-safe composition
+const str2num = (s: string) => Number(s);
+const div = (n: number) => n / 2;
+const num2str = (n: number) => String(n);
+const str2arr = (s: string) => s.split('1');
+const nonSense = string.compose(str2num).compose(div).compose(num2str).compose(str2arr);
+nonSense.parseResult('1234567890'); // : Array<string>
 ```
 
 for use outside of babel environment ```require('/node_modules/flow-validator/flow-validator.js')```
+
 for minified version ```require('/node_modules/flow-validator/flow-validator.min.js')```
 
 # Implemented types / combinators
@@ -110,7 +121,7 @@ npm run doc:serve
 
 # TODO
 
-- [ ] .validateAsync() .parseAsync() promise
+- [ ] .validateAsync() .parseAsync() promise -> readme += alternate use: json graphql alternative
 - [ ] common controls
 - [ ] include https://github.com/hapijs/joi/blob/master/API.md features
 - [ ] generate documentation from types (md, html, jsonschema, blueprint, mson)
