@@ -18,10 +18,11 @@ cd ..
 git --work-tree=./doc-building checkout master -- .
 
 cd doc-building
-sed -i.bak '/docs/d' .gitignore; rm .gitignore.bak
+sed -i.bak '/doc/d' .gitignore; rm .gitignore.bak
 echo "jekyll-cayman-theme" >> .gitignore
 echo "src" >> .gitignore
 echo "test" >> .gitignore
+echo "scripts" >> .gitignore
 yarn
 npm run doc:build
 if [ ! -d "jekyll-cayman-theme" ]; then
@@ -44,8 +45,9 @@ cp -r ./_site/* ../
 
 cd ..
 git checkout README.md
+rm -r ./src; rm -r ./test; rm -r ./scripts;
 git add --all
-git commit -m "$TAG $COMMIT $DATE"
+git commit -m "$TAG $COMMIT $DATE" --no-verify
 git push ../ gh-pages
 
 echo "$TAG $COMMIT"

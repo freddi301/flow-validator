@@ -2,7 +2,6 @@ node_modules
 coverage
 test
 doc
-docs
 doc-building
 yarn.lock
 .nyc_output

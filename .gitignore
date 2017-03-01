@@ -3,7 +3,6 @@ node_modules
 coverage
 npm-debug.log
 doc
-docs
 doc-building
 flow-validator.js
 flow-validator.js.map
