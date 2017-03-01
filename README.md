@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/freddi301/flow-validator/badge.svg?branch=master)](https://coveralls.io/github/freddi301/flow-validator?branch=master)
 [![Inline docs](http://inch-ci.org/github/freddi301/flow-validator.svg?branch=master)](http://inch-ci.org/github/freddi301/flow-validator)
 ![repo size](https://reposs.herokuapp.com/?path=freddi301/flow-validator)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/freddi301/flow-validator/issues)
 
 # flow-validator
 
@@ -123,11 +123,11 @@ npm run doc:serve
 
 # TODO
 
-- [ ] add sync versions of (arrayOf, tuple, mapping, object, objectExact) -> major release
+- [ ] add sync versions of (arrayOf, tuple, mapping, object, objectExact) -> minor release
 - [ ] readme += async validators
 - [ ] readme += alternate use: json graphql alternative
 - [ ] common controls
-- [ ] include https://github.com/hapijs/joi/blob/master/API.md features -> major release
+- [ ] include https://github.com/hapijs/joi/blob/master/API.md features -> minor release
 - [ ] generate documentation from types (md, html, jsonschema, blueprint, mson) -> release
 - [ ] doc examples for all
 - [ ] test 100% -> major release
