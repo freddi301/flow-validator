@@ -20,6 +20,10 @@ Object validation with proper flow types.
 ```javascript
 import { arrayOf, string, number, object, instanceOf, Type, Vobject } from 'flow-validator';
 
+const Person = object({ name: string, age: number.optional() });
+const fred = Person.parse({ name: 'Fred', age: 89 });
+console.log(fred); // eslint-disable-line no-console
+
 // { a: string, b: number, c: Array<string | number | Date>, d: string, e: Date }
 const Schema = object({
   a: string,
@@ -76,6 +80,9 @@ const num2str = (n: number) => String(n);
 const str2arr = (s: string) => s.split('1');
 const nonSense = string.compose(str2num).compose(div).compose(num2str).compose(str2arr);
 nonSense.parseResult('1234567890'); // : Array<string>
+
+// you can convert sync type to async one
+string.async();
 ```
 
 for use outside of babel environment ```require('/node_modules/flow-validator/flow-validator.js')```
@@ -128,8 +135,8 @@ npm run doc:serve
 - [ ] readme += alternate use: json graphql alternative
 - [ ] common controls
 - [ ] include https://github.com/hapijs/joi/blob/master/API.md features -> minor release
-- [ ] generate documentation from types (md, html, jsonschema, blueprint, mson) -> release
-- [ ] doc examples for all
+- [ ] generate documentation from types (md, html, jsonschema, blueprint, mson) -> minor release
+- [ ] doc examples for all validators
 - [ ] test 100% -> major release
 - [ ] doc 100%
 - [ ] better flow coverage where possible

@@ -16,6 +16,7 @@
     "doc:serve": "documentation serve src -g --document-exported -w -f html",
     "doc:lint": "documentation lint src -g",
     "doc:build": "documentation build src -g --document-exported -f html -o doc",
+    "doc:publish": "./scripts/doc_build.sh && git push origin gh-pages:gh-pages",
     "precommit": "npm run doc:lint && npm run eslint && npm run flow && npm run checkdeps && npm test && npm run coverage",
     "prepublish": "npm run build && npm run build:min"
   },
