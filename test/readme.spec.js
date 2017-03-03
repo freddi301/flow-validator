@@ -23,6 +23,9 @@ describe('readme code', () => {
       return Promise.reject(error('no supplies'));
     }
 
+    const Contact = object({ name: string, birth: string.toDate(), email: string.isEmail().optional() });
+    console.log(Contact.parse({ name: 'fred', birth: String(new Date), email: 'gobi301@gmail.com' })); // eslint-disable-line no-console
+
     // Don't Repeat Yourself
     // you can use a type of a defined schema, instead of
     // var yogi: { name: string, age: ?number, toys: Array<string> }
