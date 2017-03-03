@@ -12,6 +12,7 @@
     "coverage": "nyc mocha",
     "coveralls": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "codeclimate:coverage": "nyc npm test && nyc report --reporter=text-lcov | codeclimate-test-reporter",
+    "coverage:ci": "nyc npm test && nyc report --reporter=text-lcov | coveralls && nyc report --reporter=text-lcov | codeclimate-test-reporter",
     "build": "babel src --out-file ./flow-validator.js --source-maps",
     "build:min": "uglifyjs ./flow-validator.js -o ./flow-validator.min.js --source-map ./flow-validator.min.js.map -c -m",
     "doc:serve": "documentation serve src -g --document-exported -w -f html",
@@ -19,7 +20,8 @@
     "doc:build": "documentation build src -g --document-exported -f html -o doc",
     "doc:publish": "./scripts/doc_build.sh && git push origin gh-pages:gh-pages",
     "precommit": "npm run doc:lint && npm run eslint && npm run flow && npm run checkdeps && npm test && npm run coverage",
-    "prepublish": "npm run build && npm run build:min"
+    "prepublish": "npm run build && npm run build:min",
+    "postpublish": "npm run doc:publish"
   },
   "keywords": [
     "flow",
