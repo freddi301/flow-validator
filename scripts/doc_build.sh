@@ -42,6 +42,7 @@ cat ../README.md >> index.md
 bundle install
 jekyll build
 cp -r ./_site/* ../
+cp ../scripts/jekyll/favicon.ico ../favicon.ico
 
 cd ..
 git checkout README.md
