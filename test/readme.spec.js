@@ -87,5 +87,9 @@ describe('readme code', () => {
 
     // you can convert sync type to async one
     string.async();
+
+    // runtime introspection
+    const Name: Type<string> = Person.schema.name; // eslint-disable-line no-unused-vars
+    const Age: Type<?number> = Person.schema.age; // eslint-disable-line no-unused-vars
   });
 });

@@ -4,7 +4,4 @@ coverage
 npm-debug.log
 doc
 doc-building
-flow-validator.js
-flow-validator.js.map
-flow-validator.min.js
-flow-validator.min.js.map
+lib

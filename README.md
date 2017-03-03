@@ -107,9 +107,7 @@ nonSense.parseResult('1234567890'); // : Array<string>
 string.async();
 ```
 
-for use outside of babel environment ```require('/node_modules/flow-validator/flow-validator.js')```
-
-for minified version ```require('/node_modules/flow-validator/flow-validator.min.js')```
+for minified version ```require('/node_modules/flow-validator/lib/flow-validator.min.js')```
 
 # Implemented types / combinators
 
@@ -150,6 +148,10 @@ npm run doc:serve
 # Feature Requests Wanted
 (open issue, include examples or links)
 
+# Inspiration
+
+https://github.com/gcanti/flow-io (checkout https://github.com/gcanti/io-ts too)
+
 # TODO
 
 - [ ] add sync versions of (object, mapping, objectExact, tuple) -> minor release
@@ -162,7 +164,9 @@ npm run doc:serve
 - [ ] test 100% -> major release
 - [ ] doc 100%
 - [ ] better flow coverage where possible
-- [ ] negative test flow types (assert errors)
+- [ ] test flow declaration
+  - // $ExpectError
+  - .flowconfig [options] suppress_comment=\\(.\\|\n\\)*\\$ExpectError
 - [ ] json schema validation
 - [ ] performance comparison
 - [ ] optimize, use lodash, cache optional() singleton and frequently used types
