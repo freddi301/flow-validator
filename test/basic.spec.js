@@ -1,5 +1,5 @@
 // @flow
-/* eslint-env mocha */
+/* eslint-env mocha, es6 */
 
 import { expect } from 'chai';
 
@@ -10,6 +10,15 @@ describe('ValidationError', () => {
     expect((new ValidationError({ expected: string, got: null })) instanceof ValidationError).to.equal(true);
   });
 });
+
+describe('mocha async test', () => {
+  it('works', async () => { await Promise.resolve(); });
+  it('works', async () => {
+    try { await Promise.reject(new ValidationError({ expected: string, got: void 0 })); }
+    catch (e) { expect(e).to.be.instanceof(ValidationError); }
+  });
+});
+
 
 describe('VType', () => {
   it('inherits', () => {
@@ -38,7 +47,7 @@ describe('error JSON', () => {
       string.validate(3);
     } catch (e) {
       expect(e).instanceof(ValidationError);
-      expect(JSON.parse(JSON.stringify(e.toJSON()))).to.deep.equal({ expected: { name: 'string' }, got: 3 });
+      expect(e.toJSON()).to.deep.equal({ expected: { name: 'string' }, got: 3 });
     }
   });
   it('works with custom error', () => {
@@ -46,7 +55,7 @@ describe('error JSON', () => {
       string.Vrefine((s, error) => { if (s === 'hello') return s; throw error('must be hello'); }).validate('helo');
     } catch (e) {
       expect(e).instanceof(ValidationError);
-      expect(JSON.parse(JSON.stringify(e.toJSON()))).to.deep.equal({ expected: 'must be hello', got: 'helo' });
+      expect(e.toJSON()).to.deep.equal({ expected: { name: 'refined' }, got: 'helo', description: 'must be hello' });
     }
   });
 

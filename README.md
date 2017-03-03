@@ -22,8 +22,9 @@ Object validation with proper flow types.
 ```javascript
 import { arrayOf, string, number, object, instanceOf, Type, Vobject } from 'flow-validator';
 
-const Person = object({ name: string, age: number.optional() });
-const fred = Person.parse({ name: 'Fred', age: 89 });
+// { name: string, age: ?number, toys: Array<string> }
+const Person = object({ name: string, age: number.optional(), toys: arrayOf(string) });
+const fred = Person.parse({ name: 'Fred', age: 89, toys: ['teddy bear', 'shotgun'] });
 console.log(fred); // eslint-disable-line no-console
 
 // { a: string, b: number, c: Array<string | number | Date>, d: string, e: Date }
@@ -138,6 +139,7 @@ npm run doc:serve
 - [ ] common controls
 - [ ] include https://github.com/hapijs/joi/blob/master/API.md features -> minor release
 - [ ] generate documentation from types (md, html, jsonschema, blueprint, mson) -> minor release
+- [ ] find workaround for circular dependency and split index.js file
 - [ ] doc examples for all validators
 - [ ] test 100% -> major release
 - [ ] doc 100%

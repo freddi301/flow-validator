@@ -8,8 +8,9 @@ import { arrayOf, string, number, object, instanceOf, Type, Vobject } from '../s
 describe('readme code', () => {
   it('works', () => {
 
-    const Person = object({ name: string, age: number.optional() });
-    const fred = Person.parse({ name: 'Fred', age: 89 });
+    // { name: string, age: ?number, toys: Array<string> }
+    const Person = object({ name: string, age: number.optional(), toys: arrayOf(string) });
+    const fred = Person.parse({ name: 'Fred', age: 89, toys: ['teddy bear', 'shotgun'] });
     console.log(fred); // eslint-disable-line no-console
 
     // { a: string, b: number, c: Array<string | number | Date>, d: string, e: Date }
