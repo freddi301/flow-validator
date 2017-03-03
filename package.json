@@ -1,6 +1,6 @@
 {
   "name": "flow-validator",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "object validation with flow types",
   "main": "src/index.js",
   "scripts": {
