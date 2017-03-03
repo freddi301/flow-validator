@@ -2161,9 +2161,9 @@ https-proxy-agent@^1.0.0:
     debug "2"
     extend "3"
 
-husky@0.13.1:
-  version "0.13.1"
-  resolved "https://registry.yarnpkg.com/husky/-/husky-0.13.1.tgz#11efc6fc10e0ec4e789776f6582be37d71ba4ccf"
+husky@^0.13.2:
+  version "0.13.2"
+  resolved "https://registry.yarnpkg.com/husky/-/husky-0.13.2.tgz#9dcf212f88e61dba36f17be1a202ed61ff6c0661"
   dependencies:
     chalk "^1.1.3"
     find-parent-dir "^0.3.0"
@@ -4051,9 +4051,9 @@ typedarray@^0.0.6, typedarray@~0.0.5:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-uglify-js@2.8.4, uglify-js@^2.6:
-  version "2.8.4"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.8.4.tgz#5aeb6fd6f1f0a672dea63795016590502c290513"
+uglify-js@^2.6, uglify-js@^2.8.5:
+  version "2.8.5"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.8.5.tgz#ae9f5b143f4183d99a1dabb350e243fdc06641ed"
   dependencies:
     async "~0.2.6"
     source-map "~0.5.1"

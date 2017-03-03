@@ -24,7 +24,8 @@ describe('readme code', () => {
     }
 
     // Don't Repeat Yourself
-    // you can use a type of a defined schema
+    // you can use a type of a defined schema, instead of
+    // var yogi: { name: string, age: ?number, toys: Array<string> }
     var yogi: typeof Person.type; // eslint-disable-line no-unused-vars
 
     // { a: string, b: number, c: Array<string | number | Date>, d: string, e: Date }
