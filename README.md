@@ -3,9 +3,8 @@
 [![davidDm Dependencies](https://david-dm.org/freddi301/flow-validator.svg)]()
 [![Known Vulnerabilities](https://snyk.io/test/github/freddi301/flow-validator/badge.svg)](https://snyk.io/test/github/freddi301/flow-validator)
 [![Coverage Status](https://coveralls.io/repos/github/freddi301/flow-validator/badge.svg?branch=master)](https://coveralls.io/github/freddi301/flow-validator?branch=master)
-[![Inline docs](http://inch-ci.org/github/freddi301/flow-validator.svg?branch=master)](http://inch-ci.org/github/freddi301/flow-validator)
+[![Inline docs](https://inch-ci.org/github/freddi301/flow-validator.svg?branch=master)](httpsss://inch-ci.org/github/freddi301/flow-validator)
 [![npm downloads](https://img.shields.io/npm/dm/flow-validator.svg?style=flat-square)](https://www.npmjs.com/package/flow-validator)
-![src size](http://img.badgesize.io/freddi301/flow-validator/master/src/index.js)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/freddi301/flow-validator/issues)
 
 # flow-validator
@@ -16,16 +15,36 @@ Object validation with proper flow types.
 
 ```npm install flow-validator```
 
+## Requirements
+
+- [babeljs](https://babeljs.io/)
+- at least [es2015](https://babeljs.io/docs/plugins/preset-es2015/) babel preset
+- [babel-polyfill](https://babeljs.io/docs/usage/polyfill/) if want to use async validators
+
 
 ## Usage
 
 ```javascript
-import { arrayOf, string, number, object, instanceOf, Type, Vobject } from 'flow-validator';
+import { arrayOf, string, number, object, instanceOf, Type, Vobject, asyncArrayOf } from 'flow-validator';
 
 // { name: string, age: ?number, toys: Array<string> }
 const Person = object({ name: string, age: number.optional(), toys: arrayOf(string) });
 const fred = Person.parse({ name: 'Fred', age: 89, toys: ['teddy bear', 'shotgun'] });
 console.log(fred); // eslint-disable-line no-console
+
+// Array<string> validated asynchronously
+const InventoryObjects = asyncArrayOf(string.async().refine(checkInventory));
+const shoppingCart = InventoryObjects.parse(['AK47', 'stuffed bunny']);
+shoppingCart.then(items => console.log(items)); // eslint-disable-line no-console
+
+async function checkInventory(item: string, error): Promise<string> {
+  if (~['AK47', 'stuffed bunny'].indexOf(item)) return item;
+  return Promise.reject(error('no supplies'));
+}
+
+// Don't Repeat Yourself
+// you can use a type of a defined schema
+var yogi: typeof Person.type; // eslint-disable-line no-unused-vars
 
 // { a: string, b: number, c: Array<string | number | Date>, d: string, e: Date }
 const Schema = object({
@@ -34,7 +53,7 @@ const Schema = object({
   c: arrayOf(string.or(number).or(instanceOf(Date))),
   d: string.refine((s, error) => { // refinements must return the same type
     if (/el/.test(s)) return s;
-    throw error(/el/); // this throws proper error
+    throw error(String(/el/)); // this throws proper error
   }).revalidate(), // add a revalidate if want to be sure not changed type during refinement
   e: string.to(s => new Date(s)) // with .to() you can convert types
 });
@@ -133,8 +152,7 @@ npm run doc:serve
 
 # TODO
 
-- [ ] add sync versions of (arrayOf, tuple, mapping, object, objectExact) -> minor release
-- [ ] readme += async validators
+- [ ] add sync versions of (object, mapping, objectExact, tuple) -> minor release
 - [ ] readme += alternate use: json graphql alternative
 - [ ] common controls
 - [ ] include https://github.com/hapijs/joi/blob/master/API.md features -> minor release
@@ -144,6 +162,7 @@ npm run doc:serve
 - [ ] test 100% -> major release
 - [ ] doc 100%
 - [ ] better flow coverage where possible
+- [ ] negative test flow types (assert errors)
 - [ ] json schema validation
 - [ ] performance comparison
 - [ ] optimize, use lodash, cache optional() singleton and frequently used types

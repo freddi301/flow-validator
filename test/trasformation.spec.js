@@ -5,7 +5,7 @@ import { expect } from 'chai';
 
 import { object, number, ValidationError, Type } from '../src';
 
-describe('trasformation', () => {
+describe('transformation', () => {
   it('works with number -> string in object', () => {
     const numberToString: Type<string> = number.to(n => String(n));
     expect(numberToString.parse(4)).to.equal('4');

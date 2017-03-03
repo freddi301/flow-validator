@@ -34,7 +34,7 @@ describe('basic', () => {
   });
 });
 
-describe('trasformation chain', () => {
+describe('transformation chain', () => {
   it('works', () => {
     expect(string.to(s => new Date(s)).to(instanceOf(Date).parse).parse('')).to.be.instanceof(Date);
     expect(string.to(s => new Date(s)).chain(instanceOf(Date)).parse('')).to.be.instanceof(Date);

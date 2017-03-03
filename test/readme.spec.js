@@ -3,7 +3,7 @@
 
 // import { expect } from 'chai';
 
-import { arrayOf, string, number, object, instanceOf, Type, Vobject } from '../src';
+import { arrayOf, string, number, object, instanceOf, Type, Vobject, asyncArrayOf } from '../src';
 
 describe('readme code', () => {
   it('works', () => {
@@ -13,6 +13,20 @@ describe('readme code', () => {
     const fred = Person.parse({ name: 'Fred', age: 89, toys: ['teddy bear', 'shotgun'] });
     console.log(fred); // eslint-disable-line no-console
 
+    // Array<string> validated asynchronously
+    const InventoryObjects = asyncArrayOf(string.async().refine(checkInventory));
+    const shoppingCart = InventoryObjects.parse(['AK47', 'stuffed bunny']);
+    shoppingCart.then(items => console.log(items)); // eslint-disable-line no-console
+
+    async function checkInventory(item: string, error): Promise<string> {
+      if (~['AK47', 'stuffed bunny'].indexOf(item)) return item;
+      return Promise.reject(error('no supplies'));
+    }
+
+    // Don't Repeat Yourself
+    // you can use a type of a defined schema
+    var yogi: typeof Person.type; // eslint-disable-line no-unused-vars
+
     // { a: string, b: number, c: Array<string | number | Date>, d: string, e: Date }
     const Schema = object({
       a: string,
@@ -20,7 +34,7 @@ describe('readme code', () => {
       c: arrayOf(string.or(number).or(instanceOf(Date))),
       d: string.refine((s, error) => { // refinements must return the same type
         if (/el/.test(s)) return s;
-        throw error(/el/); // this throws proper error
+        throw error(String(/el/)); // this throws proper error
       }).revalidate(), // add a revalidate if want to be sure not changed type during refinement
       e: string.to(s => new Date(s)) // with .to() you can convert types
     });

@@ -50,5 +50,5 @@ git add --all
 git commit -m "$TAG $COMMIT $DATE" --no-verify
 git push ../ gh-pages
 
-echo "$TAG $COMMIT"
+echo "$TAG $COMMIT $DATE"
 echo "documentation created on branch gh-pages"

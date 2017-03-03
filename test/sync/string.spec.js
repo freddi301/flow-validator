@@ -12,12 +12,12 @@ describe('string', () => {
     });
     it('throws on wrong type', () => {
       const errorShape = got => ({ expected: { name: string.name }, got });
-      try { string.parse(); } catch (e) {
+      try { string.parse(); throw new Error(); } catch (e) {
         expect(e).to.be.instanceof(ValidationError);
         expect(e.toJSON()).deep.equal(errorShape(void 0));
       }
       const date = new Date;
-      try { string.parse(date); } catch (e) {
+      try { string.parse(date); throw new Error(); } catch (e) {
         expect(e).to.be.instanceof(ValidationError);
         expect(e.toJSON()).deep.equal(errorShape(date));
       }
@@ -29,12 +29,12 @@ describe('string', () => {
     });
     it('throws on wrong type', () => {
       const errorShape = got => ({ expected: { name: string.name }, got });
-      try { string.validate(); } catch (e) {
+      try { string.validate(); throw new Error(); } catch (e) {
         expect(e).to.be.instanceof(ValidationError);
         expect(e.toJSON()).deep.equal(errorShape(void 0));
       }
       const date = new Date;
-      try { string.validate(date); } catch (e) {
+      try { string.validate(date); throw new Error(); } catch (e) {
         expect(e).to.be.instanceof(ValidationError);
         expect(e.toJSON()).deep.equal(errorShape(date));
       }

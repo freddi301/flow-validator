@@ -3,18 +3,19 @@
 export class Type<T> {
   name: string;
   parse: (value: mixed) => T;
+  type: T;
   constructor(name: string, parse: (value: mixed) => T) {
     this.name = name;
     this.parse = parse;
   }
-  to<T2>(transformation: (v: T, error: (e: any) => ValidationError) => T2): Type<T2> {
-    const tr = new Type('trasformation', v => transformation(
+  to<T2>(transformation: (v: T, error: (e: string) => ValidationError) => T2): Type<T2> {
+    const tr = new Type('transformation', v => transformation(
       this.parse(v),
       (err: string) => new ValidationError({ expected: tr, got: v, description: err }))
     );
     return tr;
   }
-  refine(refinement: (v: T, error: (e: any) => ValidationError) => T): RefinedType<T> {
+  refine(refinement: (v: T, error: (e: string) => ValidationError) => T): RefinedType<T> {
     const rf = new RefinedType(this, v => refinement(
       this.parse(v),
       (err: string) => new ValidationError({ expected: rf, got: v, description: err }))
@@ -30,7 +31,7 @@ export class Type<T> {
     try { return { value: this.parse(v) }; } catch (e) { if (e instanceof ValidationError) return { error: e }; throw e; }
   }
   toJSON() { return { name: this.name }; }
-  async(): AsyncType<T> { return new AsyncType(this.name, v => Promise.resolve(v).then(this.parse)); }
+  async(): AsyncType<T> { return new AsyncType(this.name, this.parse); }
 }
 
 export class VType<T> extends Type<T> {
@@ -55,7 +56,7 @@ export class VType<T> extends Type<T> {
   Vand<T2>(t2: VType<T2>): VIntersectionType<T, T2> { return Vintersection(this, t2); }
   Vor<T2>(t2: VType<T2>): VUnionType<T, T2> { return Vunion(this, t2); }
   Voptional(): VOptionalType<T> { return Voptional(this); }
-  Vasync(): AsyncVType<T> { return new AsyncVType(this.name, v => Promise.resolve(v).then(this.validate)); }
+  Vasync(): AsyncVType<T> { return new AsyncVType(this.name, this.validate); }
 }
 
 export class CustomErrorType<T> extends VType<T> {}
@@ -71,18 +72,18 @@ export class ClassOfType<T> extends VType<T> {
 }
 
 export class ArrayOfType<T> extends Type<Array<T>> {
-  type: Type<T>;
+  itemType: Type<T>;
   constructor(t: Type<T>, parse: (value: mixed) => Array<T>) {
     super('arrayOf', parse);
-    this.type = t;
+    this.itemType = t;
   }
 }
 
 export class VArrayOfType<T> extends VType<Array<T>> {
-  type: VType<T>;
+  itemType: VType<T>;
   constructor(t: VType<T>, validate: (value: mixed) => Array<T>) {
     super('arrayOf', validate);
-    this.type = t;
+    this.itemType = t;
   }
 }
 
@@ -124,13 +125,13 @@ export class LiteralType<T> extends VType<T> {
 }
 
 export class OptionalType<T> extends Type<?T> {
-  type: Type<T>;
-  constructor(t: Type<T>, validate: (value: mixed) => ?T) { super('optional', validate); this.type = t; }
+  innerType: Type<T>;
+  constructor(t: Type<T>, validate: (value: mixed) => ?T) { super('optional', validate); this.innerType = t; }
 }
 
 export class VOptionalType<T> extends VType<?T> {
-  type: VType<T>;
-  constructor(t: VType<T>, validate: (value: mixed) => ?T) { super('optional', validate); this.type = t; }
+  innerType: VType<T>;
+  constructor(t: VType<T>, validate: (value: mixed) => ?T) { super('optional', validate); this.innerType = t; }
 }
 
 export class MappingType<K, V> extends Type<{[key: K]: V}> {
@@ -617,15 +618,24 @@ export function syncFunctionToAsync<T>(f: (value: mixed) => T | Promise<T>): (va
 export class AsyncType<T> {
   name: string;
   parse: (value: mixed) => Promise<T>;
+  type: T;
   constructor(name: string, parse: (value: mixed) => T | Promise<T>) {
     this.name = name;
     this.parse = syncFunctionToAsync(parse);
   }
-  to<T2>(f: (v: T, error: (e: any) => ValidationError) => T2 | Promise<T2>): AsyncType<T2> {
-    return new Type('trasformation', async (v) => f(await this.parse(v), (err: any) => new ValidationError({ expected: err, got: v })));
+  to<T2>(transformation: (v: T, error: (e: string) => ValidationError) => T2 | Promise<T2>): AsyncType<T2> {
+    const tr = new Type('transformation', async (v) => transformation(
+      await this.parse(v),
+      (err: string) => new ValidationError({ expected: tr, got: v, description: err }))
+    );
+    return tr;
   }
-  refine(f: (v: T, error: (e: any) => ValidationError) => T | Promise<T>): AsyncRefinedType<T> {
-    return new AsyncRefinedType(this, async (v) => f(await this.parse(v), (err: any) => new ValidationError({ expected: err, got: v })));
+  refine(refinement: (v: T, error: (e: string) => ValidationError) => T | Promise<T>): AsyncRefinedType<T> {
+    const rf = new AsyncRefinedType(this, async (v) => refinement(
+      await this.parse(v),
+      (err: string) => new ValidationError({ expected: rf, got: v, description: err }))
+    );
+    return rf;
   }
   and<T2>(t2: AsyncType<T2>): AsyncIntersectionType<T, T2> { return asyncIntersection(this, t2); }
   or<T2>(t2: AsyncType<T2>): AsyncUnionType<T, T2> { return asyncUnion(this, t2); }
@@ -643,8 +653,12 @@ export class AsyncVType<T> extends AsyncType<T> {
     super(name, validate);
     this.validate = syncFunctionToAsync(validate);
   }
-  Vrefine(f: (v: T, error: (e: any) => ValidationError) => T): AsyncVRefinedType<T> {
-    return new AsyncVRefinedType(this, async (v) => f(await this.parse(v), (err: any) => new ValidationError({ expected: err, got: v })));
+  Vrefine(refinement: (v: T, error: (e: string) => ValidationError) => T | Promise<T>): AsyncVRefinedType<T> {
+    const rf = new AsyncVRefinedType(this, async (v) => refinement(
+      await this.parse(v),
+      (err: string) => new ValidationError({ expected: rf, got: v, description: err }))
+    );
+    return rf;
   }
   Vand<T2>(t2: AsyncVType<T2>): AsyncVIntersectionType<T, T2> { return asyncVintersection(this, t2); }
   Vor<T2>(t2: AsyncVType<T2>): AsyncVUnionType<T, T2> { return asyncVunion(this, t2); }
@@ -742,13 +756,13 @@ export function asyncVunion<A, B>(a: AsyncVType<A>, b: AsyncVType<B>): AsyncVUni
 }
 
 export class AsyncOptionalType<T> extends AsyncType<?T> {
-  type: AsyncType<T>;
-  constructor(t: AsyncType<T>, validate: (value: mixed) => Promise<?T>) { super('optional', validate); this.type = t; }
+  innerType: AsyncType<T>;
+  constructor(t: AsyncType<T>, validate: (value: mixed) => Promise<?T>) { super('optional', validate); this.innerType = t; }
 }
 
 export class AsyncVOptionalType<T> extends AsyncVType<?T> {
-  type: AsyncVType<T>;
-  constructor(t: AsyncVType<T>, validate: (value: mixed) => Promise<?T>) { super('optional', validate); this.type = t; }
+  innerType: AsyncVType<T>;
+  constructor(t: AsyncVType<T>, validate: (value: mixed) => Promise<?T>) { super('optional', validate); this.innerType = t; }
 }
 
 export function asyncOptional<T>(t: AsyncType<T>): AsyncOptionalType<T> {
@@ -786,18 +800,18 @@ export class AsyncComposeLeftType<T, T2> extends AsyncType<T2> {
 }
 
 export class AsyncArrayOfType<T> extends AsyncType<Array<T>> {
-  type: AsyncType<T>;
+  innerType: AsyncType<T>;
   constructor(t: AsyncType<T>, parse: (value: mixed) => Array<T> | Promise<Array<T>>) {
     super('arrayOf', parse);
-    this.type = t;
+    this.innerType = t;
   }
 }
 
 export class AsyncVArrayOfType<T> extends AsyncVType<Array<T>> {
-  type: AsyncVType<T>;
+  innerType: AsyncVType<T>;
   constructor(t: AsyncVType<T>, validate: (value: mixed) => Array<T> | Promise<Array<T>>) {
     super('arrayOf', validate);
-    this.type = t;
+    this.innerType = t;
   }
 }
 
@@ -805,8 +819,8 @@ export function asyncArrayOf<T>(t: AsyncType<T>): AsyncArrayOfType<T> {
   const aof = new AsyncArrayOfType(t, async (v) => {
     const a = arrayType.validate(v);
     const errors: Errors = {};
-    const result: Array<T> = await Promise.all(a.map((item, index) => {
-      try { return t.parse(item); } catch (e) {
+    const result: Array<T> = await Promise.all(a.map(async (item, index) => {
+      try { return await t.parse(item); } catch (e) {
         if (e instanceof ValidationError) {
           errors[String(index)] = (e: ValidationError);
           return ((void 0): any);
