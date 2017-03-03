@@ -6,6 +6,7 @@
 [![Inline docs](https://inch-ci.org/github/freddi301/flow-validator.svg?branch=master)](httpsss://inch-ci.org/github/freddi301/flow-validator)
 [![npm downloads](https://img.shields.io/npm/dm/flow-validator.svg?style=flat-square)](https://www.npmjs.com/package/flow-validator)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/freddi301/flow-validator/issues)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
 # flow-validator
 
@@ -43,7 +44,8 @@ async function checkInventory(item: string, error): Promise<string> {
 }
 
 // Don't Repeat Yourself
-// you can use a type of a defined schema
+// you can use a type of a defined schema, instead of
+// var yogi: { name: string, age: ?number, toys: Array<string> }
 var yogi: typeof Person.type; // eslint-disable-line no-unused-vars
 
 // { a: string, b: number, c: Array<string | number | Date>, d: string, e: Date }
@@ -105,6 +107,10 @@ nonSense.parseResult('1234567890'); // : Array<string>
 
 // you can convert sync type to async one
 string.async();
+
+// runtime introspection
+const Name: Type<string> = Person.schema.name; // eslint-disable-line no-unused-vars
+const Age: Type<?number> = Person.schema.age; // eslint-disable-line no-unused-vars
 ```
 
 for minified version ```require('/node_modules/flow-validator/lib/flow-validator.min.js')```
@@ -148,9 +154,16 @@ npm run doc:serve
 # Feature Requests Wanted
 (open issue, include examples or links)
 
-# Inspiration
+## Inspiration
 
-https://github.com/gcanti/flow-io (checkout https://github.com/gcanti/io-ts too)
+[flow-io](https://github.com/gcanti/flow-io) (checkout [io-ts](https://github.com/gcanti/io-ts) too)
+
+## Alternatives
+- [flow-io](https://github.com/gcanti/flow-io)
+- [validated](https://github.com/andreypopp/validated)
+
+## Alternatives - not flow typed
+- [joi](https://github.com/hapijs/joi)
 
 # TODO
 
