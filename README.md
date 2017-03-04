@@ -5,6 +5,8 @@
 [![Coverage Status](https://coveralls.io/repos/github/freddi301/flow-validator/badge.svg?branch=master)](https://coveralls.io/github/freddi301/flow-validator?branch=master)
 [![Inline docs](https://inch-ci.org/github/freddi301/flow-validator.svg?branch=master)](httpsss://inch-ci.org/github/freddi301/flow-validator)
 [![npm downloads](https://img.shields.io/npm/dm/flow-validator.svg?style=flat-square)](https://www.npmjs.com/package/flow-validator)
+![Licence](https://img.shields.io/npm/l/flow-validator.svg?label=licence)
+![Stability: Stable](https://img.shields.io/badge/stability-alpha-blue.svg)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/freddi301/flow-validator/issues)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
@@ -169,6 +171,11 @@ npm run doc:serve
 
 # TODO
 
+- [ ] add pattern matching
+- [ ] function definition and decoration with types
+- [ ] multimethods / overloading
+- [ ] monad do notation using row polymorphism
+- [ ] auto row currying (aka builder)
 - [ ] add sync versions of (object, mapping, objectExact, tuple) -> minor release
 - [ ] readme += alternate use: json graphql alternative
 - [ ] common controls
@@ -187,6 +194,7 @@ npm run doc:serve
 - [ ] optimize, use lodash, cache optional() singleton and frequently used types
 - [ ] readme += new type example
 - [ ] literal values
+- [ ] use https://waffle.io/ for issue kanban
 
 ---
 
