@@ -16,13 +16,6 @@ Object validation with proper flow types.
 
 ```npm install flow-validator```
 
-## Requirements
-
-- [babeljs](https://babeljs.io/)
-- at least [es2015](https://babeljs.io/docs/plugins/preset-es2015/) babel preset
-- [babel-polyfill](https://babeljs.io/docs/usage/polyfill/) if want to use async validators
-
-
 ## Usage
 
 ```javascript

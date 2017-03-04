@@ -1,8 +1,34 @@
 {
   "presets": [
-    "latest"
+    [
+      "env",
+      {
+        "targets": {
+          "uglify": true,
+          "node": 0.12,
+          "browsers": [
+            "last 2 versions",
+            "safari >= 9",
+            "chrome >= 54",
+            "firefox >= 45",
+            "opera >= 42",
+            "edge >= 12",
+            "ie >= 8",
+            "last 4 ios versions",
+            "last 4 ios_saf versions",
+            "last 4 android versions",
+            "last 4 op_mob versions",
+            "last 4 op_mini versions",
+            "last 4 and_chr versions",
+            "last 4 and_ff versions",
+            "last 4 and_uc versions"
+          ]
+        }
+      }
+    ]
   ],
   "plugins": [
+    "transform-runtime",
     "transform-flow-strip-types",
     [
       "babel-plugin-transform-builtin-extend",

@@ -67,8 +67,8 @@
     "babel-eslint": "7.1.1",
     "babel-plugin-transform-builtin-extend": "1.1.2",
     "babel-plugin-transform-flow-strip-types": "6.22.0",
-    "babel-polyfill": "6.23.0",
-    "babel-preset-latest": "6.22.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.2.0",
     "chai": "3.5.0",
     "codeclimate-test-reporter": "0.4.1",
     "coveralls": "2.11.16",
@@ -83,5 +83,8 @@
     "nsp": "2.6.2",
     "nyc": "10.1.2",
     "uglify-js": "^2.8.5"
+  },
+  "dependencies": {
+    "babel-runtime": "^6.23.0"
   }
 }
