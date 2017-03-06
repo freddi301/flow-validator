@@ -3,7 +3,6 @@
 
 import { expect } from 'chai';
 
-
 import { asyncArrayOf, asyncVarrayOf, string, ValidationError } from '../../src';
 
 async function apiOk(x) { return x; }
@@ -11,7 +10,11 @@ async function apiFail(x, error) { throw new error(String(x)); }
 
 describe('asyncArrayOf', () => {
   it('resolves on expected type', async () => {
-    expect(await asyncArrayOf(string.async()).parse(['hello', 'bye'])).to.deep.equal(['hello', 'bye']);
+    const a = await asyncArrayOf(string.async()).parse(['hello', 'bye']);
+    (a: Array<string>);
+    // $ExpectError
+    (a: Array<number>);
+    expect(a).to.deep.equal(['hello', 'bye']);
     expect(await asyncArrayOf(string.async().to(apiOk)).parse(['hello', 'bye'])).to.deep.equal(['hello', 'bye']);
   });
   it('rejects on invalid type', async () => {
@@ -42,7 +45,11 @@ describe('asyncArrayOf', () => {
 describe('asyncVarrayOf', () => {
   it('resolves on expected type', async () => {
     const data = ['hello', 'bye'];
-    expect(await asyncVarrayOf(string.Vasync()).validate(data)).to.deep.equal(data);
+    const a = await asyncVarrayOf(string.Vasync()).validate(data);
+    (a: Array<string>);
+    // $ExpectError
+    (a: Array<Date>);
+    expect(a).to.deep.equal(data);
     expect(await asyncVarrayOf(string.Vasync()).validate(data)).to.equal(data);
     expect(await asyncVarrayOf(string.Vasync().Vrefine(apiOk)).validate(data)).to.deep.equal(data);
     expect(await asyncVarrayOf(string.Vasync().Vrefine(apiOk)).validate(data)).to.equal(data);

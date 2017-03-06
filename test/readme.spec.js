@@ -3,7 +3,7 @@
 
 // import { expect } from 'chai';
 
-import { arrayOf, string, number, object, instanceOf, Type, Vobject, asyncArrayOf } from '../src';
+import { arrayOf, string, number, object, instanceOf, Type, Vobject, asyncArrayOf, tuple, takes } from '../src';
 
 describe('readme code', () => {
   it('works', () => {
@@ -26,10 +26,21 @@ describe('readme code', () => {
     const Contact = object({ name: string, birth: string.toDate(), email: string.isEmail().optional() });
     console.log(Contact.parse({ name: 'fred', birth: String(new Date), email: 'gobi301@gmail.com' })); // eslint-disable-line no-console
 
+    // ensure functions params, useful on user input functions
+    const signUpUser = takes(string.isEmail(), number)((email, secretCoupon) => `user ${email} added with coupon: ${secretCoupon}`);
+    signUpUser('gobi301@gmail.com', 666);
+
     // Don't Repeat Yourself
     // you can use a type of a defined schema, instead of
     // var yogi: { name: string, age: ?number, toys: Array<string> }
     var yogi: typeof Person.type; // eslint-disable-line no-unused-vars
+
+    // runtime introspection
+    const Name: Type<string> = Person.schema.name; // eslint-disable-line no-unused-vars
+    const Age: Type<?number> = Person.schema.age; // eslint-disable-line no-unused-vars
+
+    // const tup: [string, number, Date] = ...
+    const tup = tuple([string, number, instanceOf(Date)]).parse(['hello', 4, new Date]);  // eslint-disable-line no-unused-vars
 
     // { a: string, b: number, c: Array<string | number | Date>, d: string, e: Date }
     const Schema = object({
@@ -90,9 +101,5 @@ describe('readme code', () => {
 
     // you can convert sync type to async one
     string.async();
-
-    // runtime introspection
-    const Name: Type<string> = Person.schema.name; // eslint-disable-line no-unused-vars
-    const Age: Type<?number> = Person.schema.age; // eslint-disable-line no-unused-vars
   });
 });

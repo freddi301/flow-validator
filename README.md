@@ -12,7 +12,7 @@
 
 # flow-validator
 
-Object validation with proper flow types.
+Object validation with proper flow types and more.
 
 ## Installation
 
@@ -21,7 +21,7 @@ Object validation with proper flow types.
 ## Usage
 
 ```javascript
-import { arrayOf, string, number, object, instanceOf, Type, Vobject, asyncArrayOf } from 'flow-validator';
+import { arrayOf, string, number, object, instanceOf, Type, Vobject, asyncArrayOf, tuple, takes } from 'flow-validator';
 
 // { name: string, age: ?number, toys: Array<string> }
 const Person = object({ name: string, age: number.optional(), toys: arrayOf(string) });
@@ -41,10 +41,21 @@ async function checkInventory(item: string, error): Promise<string> {
 const Contact = object({ name: string, birth: string.toDate(), email: string.isEmail().optional() });
 console.log(Contact.parse({ name: 'fred', birth: String(new Date), email: 'gobi301@gmail.com' })); // eslint-disable-line no-console
 
+// ensure functions params, useful on user input functions
+const signUpUser = takes(string.isEmail(), number)((email, secretCoupon) => `user ${email} added with coupon: ${secretCoupon}`);
+signUpUser('gobi301@gmail.com', 666);
+
 // Don't Repeat Yourself
 // you can use a type of a defined schema, instead of
 // var yogi: { name: string, age: ?number, toys: Array<string> }
 var yogi: typeof Person.type; // eslint-disable-line no-unused-vars
+
+// runtime introspection
+const Name: Type<string> = Person.schema.name; // eslint-disable-line no-unused-vars
+const Age: Type<?number> = Person.schema.age; // eslint-disable-line no-unused-vars
+
+// const tup: [string, number, Date] = ...
+const tup = tuple([string, number, instanceOf(Date)]).parse(['hello', 4, new Date]);  // eslint-disable-line no-unused-vars
 
 // { a: string, b: number, c: Array<string | number | Date>, d: string, e: Date }
 const Schema = object({
@@ -105,10 +116,6 @@ nonSense.parseResult('1234567890'); // : Array<string>
 
 // you can convert sync type to async one
 string.async();
-
-// runtime introspection
-const Name: Type<string> = Person.schema.name; // eslint-disable-line no-unused-vars
-const Age: Type<?number> = Person.schema.age; // eslint-disable-line no-unused-vars
 ```
 
 for minified version ```require('/node_modules/flow-validator/lib/flow-validator.min.js')```
@@ -171,24 +178,21 @@ npm run doc:serve
 
 # TODO
 
+- [ ] add async versions of (object, mapping, objectExact, tuple) -> minor release
+- [ ] readme += alternate use: json graphql alternative
+- [ ] takes() takesV() async version, return() returnsV() + async versions -> minor release
 - [ ] add pattern matching
-- [ ] function definition and decoration with types
-- [ ] multimethods / overloading
+- [ ] overloading
 - [ ] monad do notation using row polymorphism
 - [ ] auto row currying (aka builder)
-- [ ] add sync versions of (object, mapping, objectExact, tuple) -> minor release
-- [ ] readme += alternate use: json graphql alternative
-- [ ] common controls
 - [ ] include https://github.com/hapijs/joi/blob/master/API.md features -> minor release
 - [ ] generate documentation from types (md, html, jsonschema, blueprint, mson) -> minor release
 - [ ] find workaround for circular dependency and split index.js file
 - [ ] doc examples for all validators
+- [ ] test flow declaration // $ExpectError
 - [ ] test 100% -> major release
 - [ ] doc 100%
 - [ ] better flow coverage where possible
-- [ ] test flow declaration
-  - // $ExpectError
-  - .flowconfig [options] suppress_comment=\\(.\\|\n\\)*\\$ExpectError
 - [ ] json schema validation
 - [ ] performance comparison
 - [ ] optimize, use lodash, cache optional() singleton and frequently used types

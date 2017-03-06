@@ -1,7 +1,7 @@
 {
   "name": "flow-validator",
   "version": "0.3.7",
-  "description": "object validation with flow types",
+  "description": "object validation with flow types and more",
   "main": "lib/index.js",
   "files": [
     "src",
@@ -24,7 +24,7 @@
     "doc:build": "documentation build src -g --document-exported -f html -o doc --sort-order alpha",
     "doc:publish": "./scripts/doc_build.sh && git push origin gh-pages:gh-pages",
     "precommit": "npm run doc:lint && npm run eslint && npm run flow && npm run checkdeps && npm test && npm run coverage && npm run build && npm run build:min",
-    "prepublish": "npm run build && npm run build:min",
+    "prepublish": "npm run precommit",
     "postpublish": "npm run doc:publish"
   },
   "tags": [
@@ -75,7 +75,7 @@
     "documentation": "4.0.0-beta.18",
     "eslint": "3.16.1",
     "eslint-plugin-flowtype": "2.30.0",
-    "flow-bin": "0.40.0",
+    "flow-bin": "0.41.0",
     "flow-copy-source": "^1.1.0",
     "husky": "^0.13.2",
     "istanbul": "0.4.5",

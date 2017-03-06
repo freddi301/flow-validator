@@ -3,7 +3,7 @@
 
 import { expect } from 'chai';
 
-import { Vobject, string, number, instanceOf, ValidationError, VType } from '../src';
+import { Vobject, string, number, instanceOf, ValidationError, VType, tuple } from '../src';
 
 describe('ValidationError', () => {
   it('is instance of itself', () => {
@@ -40,6 +40,24 @@ describe('transformation chain', () => {
     expect(string.to(s => new Date(s)).chain(instanceOf(Date)).parse('')).to.be.instanceof(Date);
   });
 });
+
+describe('tuple types', () => {
+  it('works', () => {
+    const tu = tuple([string, number, instanceOf(Date)]);
+    const data = ['hello', 4, new Date];
+    const x = tu.parse(data);
+    expect(x).to.deep.equal(data);
+    (x[0]: string); (x[1]: number); (x[2]: Date);
+    // $ExpectError
+    (x[0]: number);
+    // $ExpectError
+    (x[1]: string);
+    // $ExpectError
+    (x[3]: number);
+  });
+
+});
+
 
 describe('error JSON', () => {
   it('works', () => {

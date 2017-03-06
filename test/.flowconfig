@@ -10,3 +10,5 @@
 ./flow_interfaces
 
 [options]
+
+suppress_comment=\\(.\\|\n\\)*\\$ExpectError

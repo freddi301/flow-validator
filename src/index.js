@@ -885,3 +885,5 @@ export function asyncVarrayOf<T>(t: AsyncVType<T>): AsyncVArrayOfType<T> {
   });
   return aof;
 }
+
+export { takes, takesV } from './sync/takes';
