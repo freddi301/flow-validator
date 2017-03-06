@@ -1,6 +1,8 @@
 // @flow
 
-import { Type, VType, tuple, Vtuple } from '../';
+import { Type } from './Type';
+import { VType } from './VType';
+import { tuple, Vtuple } from './tuple';
 
 declare function takes<P, P2, P3, P4, P5, P6, R>(t: Type<P>, t2: Type<P2>, t3: Type<P3>, t4: Type<P4>, t5: Type<P5>, t6: Type<P6>): // eslint-disable-line no-redeclare
   (f: (p: P, p2: P2, p3: P3, p4: P4, p5: P5, p6: P6) => R) => (p: P, p2: P2, p3: P3, p4: P4, p5: P5, p6: P6) => R;

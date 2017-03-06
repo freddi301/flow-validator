@@ -118,6 +118,11 @@ nonSense.parseResult('1234567890'); // : Array<string>
 string.async();
 ```
 
+if you do not want import the entire library, you can find single validators in
+```import { object } from 'flow-validator/sync/object';```
+or
+```import { asyncArrayOf } from 'flow-validator/async/asyncArrayOf';```
+
 for minified version ```require('/node_modules/flow-validator/lib/flow-validator.min.js')```
 
 # Implemented types / combinators
@@ -180,14 +185,13 @@ npm run doc:serve
 
 - [ ] add async versions of (object, mapping, objectExact, tuple) -> minor release
 - [ ] readme += alternate use: json graphql alternative
-- [ ] takes() takesV() async version, return() returnsV() + async versions -> minor release
+- [ ] takes() takesV() async version, returns() returnsV() + async versions -> minor release
 - [ ] add pattern matching
 - [ ] overloading
 - [ ] monad do notation using row polymorphism
 - [ ] auto row currying (aka builder)
 - [ ] include https://github.com/hapijs/joi/blob/master/API.md features -> minor release
 - [ ] generate documentation from types (md, html, jsonschema, blueprint, mson) -> minor release
-- [ ] find workaround for circular dependency and split index.js file
 - [ ] doc examples for all validators
 - [ ] test flow declaration // $ExpectError
 - [ ] test 100% -> major release
