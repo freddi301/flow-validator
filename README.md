@@ -144,7 +144,7 @@ for minified version ```require('/node_modules/flow-validator/lib/flow-validator
 | undefined | `void` | `isUndefined` |
 | not checked | `any` | `isAny` |
 | all types | `mixed` | `isMixed` |
-| function | `(a: A) => B` | ✘ |
+| function | `(a: A) => B` | takes(A)(returns(B)(...)) |
 
 # Included refinements
 
@@ -198,6 +198,7 @@ npm run doc:serve
 - [ ] optimize, use lodash, cache optional() singleton and frequently used types
 - [ ] readme += new type example
 - [ ] literal values
+- [ ] enhance doc generation (less file clutter)
 - [ ] use https://waffle.io/ for issue kanban
 
 ---
