@@ -12,7 +12,7 @@ cd doc-building
 git init
 mkdir -p doc-building
 git checkout gh-pages 2>/dev/null || git checkout -b gh-pages
-git pull ../ gh-pages
+git pull ../ gh-pages || true
 
 cd ..
 git --work-tree=./doc-building checkout master -- .
@@ -23,6 +23,12 @@ echo "jekyll-cayman-theme" >> .gitignore
 echo "src" >> .gitignore
 echo "test" >> .gitignore
 echo "scripts" >> .gitignore
+echo "yarn.lock" >> .gitignore
+echo "package.json" >> .gitignore
+echo ".travis.yml" >> .gitignore
+echo ".eslintrc" >> .gitignore
+echo ".babelrc" >> .gitignore
+
 yarn
 npm run doc:build
 if [ ! -d "jekyll-cayman-theme" ]; then
@@ -41,12 +47,14 @@ EndOfMessage
 cat ../README.md >> index.md
 bundle install
 jekyll build
+rm ./_site/Gemfile
+rm ./_site/Gemfile.lock
+rm ./_site/jekyll-cayman-theme.gemspec
+rm ./_site/README.md
 cp -r ./_site/* ../
 cp ../scripts/jekyll/favicon.ico ../favicon.ico
 
 cd ..
-git checkout README.md
-rm -r ./src; rm -r ./test; rm -r ./scripts;
 git add --all
 git commit -m "$TAG $COMMIT $DATE" --no-verify
 git push ../ gh-pages

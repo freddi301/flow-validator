@@ -176,7 +176,7 @@ npm run doc:serve
 ## Alternatives - not flow typed
 - [joi](https://github.com/hapijs/joi)
 
-# TODO
+# Planned Features
 
 - [ ] add async versions of (object, mapping, objectExact, tuple) -> minor release
 - [ ] readme += alternate use: json graphql alternative
@@ -198,7 +198,6 @@ npm run doc:serve
 - [ ] optimize, use lodash, cache optional() singleton and frequently used types
 - [ ] readme += new type example
 - [ ] literal values
-- [ ] enhance doc generation (less file clutter)
 - [ ] use https://waffle.io/ for issue kanban
 
 ---
