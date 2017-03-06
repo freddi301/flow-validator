@@ -66,3 +66,5 @@ export { asyncArrayOf } from './async/asyncArrayOf';
 export { asyncVarrayOf } from './async/asyncVarrayOf';
 
 export { takes, takesV } from './sync/takes';
+
+export { asyncTuple, asyncVtuple } from './async/asyncTuple';

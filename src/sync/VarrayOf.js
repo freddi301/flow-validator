@@ -17,7 +17,6 @@ export function VarrayOf<T>(t: VType<T>): VArrayOfType<T> {
     });
     if (Object.getOwnPropertyNames(errors).length) throw new ValidationError({ expected: aof, got: v, errors });
     return ((a: any): Array<T>); // eslint-disable-line flowtype/no-weak-types
-    // return a.map(t.validate); this is type correct
   });
   return aof;
 }
