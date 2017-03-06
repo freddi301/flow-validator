@@ -183,9 +183,8 @@ npm run doc:serve
 
 # Planned Features
 
-- [ ] add async versions of (object, mapping, objectExact) -> minor release
-- [ ] readme += alternate use: json graphql alternative
 - [ ] takes() takesV() async version, returns() returnsV() + async versions -> minor release
+- [ ] readme += alternate use: json graphql alternative
 - [ ] add pattern matching
 - [ ] overloading
 - [ ] monad do notation using row polymorphism
