@@ -3,7 +3,7 @@
 
 import { expect } from 'chai';
 
-import { takes, takesV, Vobject, object, string, number, Type, VType, ValidationError } from '../../src';
+import { takes, Vtakes, Vobject, object, string, number, Type, VType, ValidationError } from '../../src';
 
 describe('takes', () => {
   const os: Type<{ name: string, age: number }> = object({ name: string, age: number });
@@ -44,9 +44,9 @@ describe('takes', () => {
   });
 });
 
-describe('takesV', () => {
+describe('Vtakes', () => {
   const os: VType<{ name: string, age: number }> = Vobject({ name: string, age: number });
-  const decorator = takesV(string, os);
+  const decorator = Vtakes(string, os);
   const decorated = decorator((s, { name, age }) => {
     (s: string); (name: string); (age: number);
     // $ExpectError

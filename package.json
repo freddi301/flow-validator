@@ -38,7 +38,9 @@
     "object",
     "validation",
     "validate",
-    "validator"
+    "validator",
+    "async",
+    "pattern-matching"
   ],
   "keywords": [
     "flow",
@@ -49,7 +51,9 @@
     "object",
     "validation",
     "validate",
-    "validator"
+    "validator",
+    "async",
+    "pattern-matching"
   ],
   "author": "Frederik Batuna <gobi301@gmail.com>",
   "license": "MIT",

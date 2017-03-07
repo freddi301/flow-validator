@@ -3,7 +3,7 @@
 
 // import { expect } from 'chai';
 
-import { arrayOf, string, number, object, instanceOf, Type, Vobject, asyncArrayOf, tuple, takes } from '../src';
+import { arrayOf, string, number, object, instanceOf, Type, Vobject, asyncArrayOf, tuple, takes, match } from '../src';
 
 describe('readme code', () => {
   it('works', () => {
@@ -22,6 +22,13 @@ describe('readme code', () => {
       if (~['AK47', 'stuffed bunny'].indexOf(item)) return item;
       return Promise.reject(error('no supplies'));
     }
+
+    // pattern matching
+    const x = match(1,
+      number, n => new Date(n*2),
+      Person, ({ name }) => [name, name]
+    );
+    (x: Date);
 
     const Contact = object({ name: string, birth: string.toDate(), email: string.isEmail().optional() });
     console.log(Contact.parse({ name: 'fred', birth: String(new Date), email: 'gobi301@gmail.com' })); // eslint-disable-line no-console

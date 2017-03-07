@@ -65,7 +65,7 @@ export { asyncArrayOf } from './async/asyncArrayOf';
 
 export { asyncVarrayOf } from './async/asyncVarrayOf';
 
-export { takes, takesV } from './sync/takes';
+export { takes, Vtakes } from './sync/takes';
 
 export { asyncTuple, asyncVtuple } from './async/asyncTuple';
 
@@ -76,3 +76,5 @@ export { asyncVobject } from './async/asyncVobject';
 export { asyncObjectExact } from './async/asyncObjectExact';
 
 export { asyncVobjectExact } from './async/asyncVobjectExact';
+
+export { match } from './sync/match';

@@ -21,7 +21,7 @@ Object validation with proper flow types and more.
 ## Usage
 
 ```javascript
-import { arrayOf, string, number, object, instanceOf, Type, Vobject, asyncArrayOf, tuple, takes } from 'flow-validator';
+import { arrayOf, string, number, object, instanceOf, Type, Vobject, asyncArrayOf, tuple, takes, match } from 'flow-validator';
 
 // { name: string, age: ?number, toys: Array<string> }
 const Person = object({ name: string, age: number.optional(), toys: arrayOf(string) });
@@ -37,6 +37,13 @@ async function checkInventory(item: string, error): Promise<string> {
   if (~['AK47', 'stuffed bunny'].indexOf(item)) return item;
   return Promise.reject(error('no supplies'));
 }
+
+// pattern matching
+const x = match(1,
+  number, n => new Date(n*2),
+  Person, ({ name }) => [name, name]
+);
+(x: Date);
 
 const Contact = object({ name: string, birth: string.toDate(), email: string.isEmail().optional() });
 console.log(Contact.parse({ name: 'fred', birth: String(new Date), email: 'gobi301@gmail.com' })); // eslint-disable-line no-console
@@ -149,7 +156,7 @@ for minified version ```require('/node_modules/flow-validator/lib/flow-validator
 | undefined | `void` | `isUndefined` |
 | not checked | `any` | `isAny` |
 | all types | `mixed` | `isMixed` |
-| function | `(a: A) => B` | takes(A)(returns(B)(...)) |
+| function | `(a: A) => B` | `takes(A)(returns(B)(...))` |
 
 # Included refinements
 
@@ -183,25 +190,31 @@ npm run doc:serve
 
 # Planned Features
 
-- [ ] takes() takesV() async version, returns() returnsV() + async versions -> minor release
-- [ ] readme += alternate use: json graphql alternative
-- [ ] add pattern matching
-- [ ] overloading
-- [ ] monad do notation using row polymorphism
-- [ ] auto row currying (aka builder)
-- [ ] include https://github.com/hapijs/joi/blob/master/API.md features -> minor release
-- [ ] generate documentation from types (md, html, jsonschema, blueprint, mson) -> minor release
-- [ ] doc examples for all validators
-- [ ] test flow declaration // $ExpectError
-- [ ] test 100% -> major release
-- [ ] doc 100%
-- [ ] better flow coverage where possible
-- [ ] json schema validation
-- [ ] performance comparison
-- [ ] optimize, use lodash, cache optional() singleton and frequently used types
-- [ ] readme += new type example
-- [ ] literal values
-- [ ] use https://waffle.io/ for issue kanban
+- [ ] 0.5.0
+  - asyncTakes() asyncVtakes()
+  - returns() Vreturns() asyncReturns() asyncVreturns()
+  - readme += alternate use: json graphql alternative
+- [ ] 0.6.0
+  - Vmatch asyncMatch asyncVmatch
+  - overloading
+  - monad do notation using row polymorphism
+  - auto row currying (aka builder)
+- [ ] 0.7.0
+  - include https://github.com/hapijs/joi/blob/master/API.md features
+- [ ] 0.8.0
+  - generate documentation from types (md, html, jsonschema, blueprint, mson)
+  - json schema validation
+- [ ] 1.0.0
+  - test 100%
+  - doc examples for all validators
+  - better flow coverage where possible
+  - readme += new type example
+- [ ] 2.0.0
+  - doc 100%
+  - performance comparison
+  - optimize, use lodash, cache optional() singleton and frequently used types
+  - literal values
+- use https://waffle.io/ for issue kanban
 
 ---
 

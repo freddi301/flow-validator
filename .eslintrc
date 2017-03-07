@@ -13,6 +13,7 @@
     "es6"
   },
   "rules": {
-    "semi": ["error", "always"]
+    "semi": ["error", "always"],
+    "object-curly-spacing": ["error", "always"]
   }
 }

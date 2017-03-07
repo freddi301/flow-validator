@@ -13,7 +13,7 @@ export class StringType extends VType<string> {
       const s = string.parse(v);
       const date: Date = new Date(s);
       if ( Object.prototype.toString.call(date) === "[object Date]") {
-        if ( isNaN( date.getTime() ) ) { throw new ValidationError({ expected: dt, got: v}); }
+        if ( isNaN( date.getTime() ) ) { throw new ValidationError({ expected: dt, got: v }); }
         else { return s; }
       } else { throw new ValidationError({ expected: dt, got: v, description: 'invalid date' }); }
     });
@@ -26,7 +26,7 @@ export class StringType extends VType<string> {
       if ( Object.prototype.toString.call(date) === "[object Date]") {
         if ( isNaN( date.getTime() ) ) { throw new ValidationError({ expected: dt, got: v }); }
         else { return date; }
-      } else { throw new ValidationError({ expected: dt, got: v, description: 'invalid date'}); }
+      } else { throw new ValidationError({ expected: dt, got: v, description: 'invalid date' }); }
     });
     return dt;
   }
