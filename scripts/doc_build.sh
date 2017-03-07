@@ -6,10 +6,12 @@ set -x
 COMMIT=$(git rev-parse master)
 TAG=$(git describe $(git rev-list --tags --max-count=1))
 DATE=`date +%Y-%m-%d`
+ORIGIN=$(git config --get remote.origin.url)
 
 mkdir -p doc-building
 cd doc-building
 git init
+git remote add origin $ORIGIN || true
 mkdir -p doc-building
 git checkout gh-pages 2>/dev/null || git checkout -b gh-pages
 git pull ../ gh-pages || true
