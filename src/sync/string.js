@@ -39,6 +39,14 @@ export class StringType extends VType<string> {
     });
     return em;
   }
+  minLength(length: number): StringType {
+    const mls = new StringType(v => {
+      const s = this.validate(v);
+      if (s.length < length) throw new ValidationError({ expected: mls, got: v, description: `at least ${length} chars` });
+      return s;
+    });
+    return mls;
+  }
 }
 
 export const string: StringType = new StringType(v => {
