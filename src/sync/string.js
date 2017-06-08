@@ -47,6 +47,14 @@ export class StringType extends VType<string> {
     });
     return mls;
   }
+  regexp(regularExpression: RegExp): StringType {
+    const rgx = new StringType(v => {
+      const s = this.validate(v);
+      if (!regularExpression.test(s)) throw new ValidationError({ expected: rgx, got: v, description: `expected to match regexp ${String(regularExpression)}` });
+      return s;
+    });
+    return rgx;
+  }
 }
 
 export const string: StringType = new StringType(v => {
