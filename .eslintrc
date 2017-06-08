@@ -8,9 +8,9 @@
     "flowtype"
   ],
   "env": {
-    "browser",
-    "node",
-    "es6"
+    "browser": true,
+    "node": true,
+    "es6": true
   },
   "rules": {
     "semi": ["error", "always"],

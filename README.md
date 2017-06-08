@@ -45,6 +45,15 @@ const x = match(1,
 );
 (x: Date);
 
+// express middleware example
+const middleware = express.middleware(object({ headers: object({ 'my-custom-header': string }) }), (req, res, next) => next());
+
+// express endpoint matching middleware (inspired to Spring RequestMapping)
+const requestMap1 = express.requestMapping(object({ body: Person }), (req, res) => res.json(req.body.age));
+const requestMap2 = express.requestMapping(object({ body: object({ username: string, password: string }) }), (req, res) => {/* authenticate */});
+// app.use('/user', requestMap1);
+// app.use('/user', requestMap2);
+
 const Contact = object({ name: string, birth: string.toDate(), email: string.isEmail().optional() });
 console.log(Contact.parse({ name: 'fred', birth: String(new Date), email: 'gobi301@gmail.com' })); // eslint-disable-line no-console
 

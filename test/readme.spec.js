@@ -1,9 +1,8 @@
 // @flow
 /* eslint-env mocha, browser */
+/* eslint-disable no-unused-vars */
 
-// import { expect } from 'chai';
-
-import { arrayOf, string, number, object, instanceOf, Type, Vobject, asyncArrayOf, tuple, takes, match } from '../src';
+import { arrayOf, string, number, object, instanceOf, Type, Vobject, asyncArrayOf, tuple, takes, match, express } from '../src';
 
 describe('readme code', () => {
   it('works', () => {
@@ -30,6 +29,15 @@ describe('readme code', () => {
     );
     (x: Date);
 
+    // express middleware example
+    const middleware = express.middleware(object({ headers: object({ 'my-custom-header': string }) }), (req, res, next) => next());
+
+    // express endpoint matching middleware (inspired to Spring RequestMapping)
+    const requestMap1 = express.requestMapping(object({ body: Person }), (req, res) => res.json(req.body.age));
+    const requestMap2 = express.requestMapping(object({ body: object({ username: string, password: string }) }), (req, res) => {/* authenticate */});
+    // app.use('/user', requestMap1);
+    // app.use('/user', requestMap2);
+
     const Contact = object({ name: string, birth: string.toDate(), email: string.isEmail().optional() });
     console.log(Contact.parse({ name: 'fred', birth: String(new Date), email: 'gobi301@gmail.com' })); // eslint-disable-line no-console
 
@@ -40,14 +48,14 @@ describe('readme code', () => {
     // Don't Repeat Yourself
     // you can use a type of a defined schema, instead of
     // var yogi: { name: string, age: ?number, toys: Array<string> }
-    var yogi: typeof Person.type; // eslint-disable-line no-unused-vars
+    var yogi: typeof Person.type; 
 
     // runtime introspection
-    const Name: Type<string> = Person.schema.name; // eslint-disable-line no-unused-vars
-    const Age: Type<?number> = Person.schema.age; // eslint-disable-line no-unused-vars
+    const Name: Type<string> = Person.schema.name; 
+    const Age: Type<?number> = Person.schema.age; 
 
     // const tup: [string, number, Date] = ...
-    const tup = tuple([string, number, instanceOf(Date)]).parse(['hello', 4, new Date]);  // eslint-disable-line no-unused-vars
+    const tup = tuple([string, number, instanceOf(Date)]).parse(['hello', 4, new Date]);  
 
     // { a: string, b: number, c: Array<string | number | Date>, d: string, e: Date }
     const Schema = object({
