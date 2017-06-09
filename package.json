@@ -25,7 +25,8 @@
     "doc:publish": "./scripts/doc_build.sh && git push origin gh-pages:gh-pages",
     "precommit": "npm run doc:lint && npm run eslint && npm run flow && npm run checkdeps && npm test && npm run coverage && npm run build && npm run build:min",
     "prepublish": "npm run precommit",
-    "postpublish": "npm run doc:publish"
+    "postpublish": "npm run doc:publish",
+    "bithound": "bithound check git@github.com:freddi301/flow-validator.git"
   },
   "tags": [
     "flow",
@@ -73,6 +74,7 @@
     "babel-plugin-transform-flow-strip-types": "6.22.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.2.0",
+    "bithound": "^1.7.0",
     "chai": "4.0.2",
     "codeclimate-test-reporter": "0.5.0",
     "coveralls": "2.13.1",
