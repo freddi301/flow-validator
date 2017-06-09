@@ -47,6 +47,14 @@ export class StringType extends VType<string> {
     });
     return mls;
   }
+  maxLength(length: number): StringType {
+    const mls = new StringType(v => {
+      const s = this.validate(v);
+      if (s.length > length) throw new ValidationError({ expected: mls, got: v, description: `at most ${length} chars` });
+      return s;
+    });
+    return mls;
+  }
   regexp(regularExpression: RegExp): StringType {
     const rgx = new StringType(v => {
       const s = this.validate(v);
