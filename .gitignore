@@ -1,0 +1,14 @@
+node_modules
+.nyc_output
+coverage
+npm-debug.log
+lib
+jekyll-cayman-theme
+src
+test
+scripts
+yarn.lock
+package.json
+.travis.yml
+.eslintrc
+.babelrc

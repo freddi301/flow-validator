@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  
+  <head>
+  <meta charset="UTF-8">
+  <title>flow-validator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#157878">
+  <link rel="stylesheet" href="/flow-validator/css/normalize.css">
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="/flow-validator/css/cayman.css">
+</head>
+
+  <body>
+    <section class="page-header">
+  <h1 class="project-name">flow-validator</h1>
+  <h2 class="project-tagline">Object validation with proper flow types</h2>
+  <a href="https://github.com/freddi301/flow-validator" class="btn">GitHub</a>
+  <a href="doc" class="btn">Docs</a>
+</section>
+
+
+    <section class="main-content">
+      
+      <p><a href="https://badge.fury.io/js/flow-validator"><img src="https://badge.fury.io/js/flow-validator.svg" alt="npm version" /></a>
+<a href="https://travis-ci.org/freddi301/flow-validator"><img src="https://travis-ci.org/freddi301/flow-validator.svg?branch=master" alt="Build Status" /></a>
+<a href=""><img src="https://david-dm.org/freddi301/flow-validator.svg" alt="davidDm Dependencies" /></a>
+<a href="https://snyk.io/test/github/freddi301/flow-validator"><img src="https://snyk.io/test/github/freddi301/flow-validator/badge.svg" alt="Known Vulnerabilities" /></a>
+<a href="https://coveralls.io/github/freddi301/flow-validator?branch=master"><img src="https://coveralls.io/repos/github/freddi301/flow-validator/badge.svg?branch=master" alt="Coverage Status" /></a>
+<a href="httpsss://inch-ci.org/github/freddi301/flow-validator"><img src="https://inch-ci.org/github/freddi301/flow-validator.svg?branch=master" alt="Inline docs" /></a>
+<a href="https://www.npmjs.com/package/flow-validator"><img src="https://img.shields.io/npm/dm/flow-validator.svg?style=flat-square" alt="npm downloads" /></a>
+<img src="https://img.shields.io/npm/l/flow-validator.svg?label=licence" alt="Licence" />
+<img src="https://img.shields.io/badge/stability-alpha-blue.svg" alt="Stability: Stable" />
+<a href="https://github.com/freddi301/flow-validator/issues"><img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat" alt="contributions welcome" /></a>
+<a href="http://makeapullrequest.com"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" /></a></p>
+
+<h1 id="flow-validator">flow-validator</h1>
+
+<p>Object validation with proper flow types and more.</p>
+
+<h2 id="installation">Installation</h2>
+
+<p><code class="highlighter-rouge">npm install flow-validator</code></p>
+
+<h2 id="usage">Usage</h2>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kr">import</span> <span class="p">{</span> <span class="nx">arrayOf</span><span class="p">,</span> <span class="nx">string</span><span class="p">,</span> <span class="nx">number</span><span class="p">,</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">instanceOf</span><span class="p">,</span> <span class="nx">Type</span><span class="p">,</span> <span class="nx">Vobject</span><span class="p">,</span> <span class="nx">asyncArrayOf</span><span class="p">,</span> <span class="nx">tuple</span><span class="p">,</span> <span class="nx">takes</span><span class="p">,</span> <span class="nx">match</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">'flow-validator'</span><span class="p">;</span>
+
+<span class="c1">// { name: string, age: ?number, toys: Array&lt;string&gt; }</span>
+<span class="kr">const</span> <span class="nx">Person</span> <span class="o">=</span> <span class="nx">object</span><span class="p">({</span> <span class="na">name</span><span class="p">:</span> <span class="nx">string</span><span class="p">,</span> <span class="na">age</span><span class="p">:</span> <span class="nx">number</span><span class="p">.</span><span class="nx">optional</span><span class="p">(),</span> <span class="na">toys</span><span class="p">:</span> <span class="nx">arrayOf</span><span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="p">});</span>
+<span class="kr">const</span> <span class="nx">fred</span> <span class="o">=</span> <span class="nx">Person</span><span class="p">.</span><span class="nx">parse</span><span class="p">({</span> <span class="na">name</span><span class="p">:</span> <span class="s1">'Fred'</span><span class="p">,</span> <span class="na">age</span><span class="p">:</span> <span class="mi">89</span><span class="p">,</span> <span class="na">toys</span><span class="p">:</span> <span class="p">[</span><span class="s1">'teddy bear'</span><span class="p">,</span> <span class="s1">'shotgun'</span><span class="p">]</span> <span class="p">});</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">fred</span><span class="p">);</span> <span class="c1">// eslint-disable-line no-console</span>
+
+<span class="c1">// Array&lt;string&gt; validated asynchronously</span>
+<span class="kr">const</span> <span class="nx">InventoryObjects</span> <span class="o">=</span> <span class="nx">asyncArrayOf</span><span class="p">(</span><span class="nx">string</span><span class="p">.</span><span class="nx">async</span><span class="p">().</span><span class="nx">refine</span><span class="p">(</span><span class="nx">checkInventory</span><span class="p">));</span>
+<span class="kr">const</span> <span class="nx">shoppingCart</span> <span class="o">=</span> <span class="nx">InventoryObjects</span><span class="p">.</span><span class="nx">parse</span><span class="p">([</span><span class="s1">'AK47'</span><span class="p">,</span> <span class="s1">'stuffed bunny'</span><span class="p">]);</span>
+<span class="nx">shoppingCart</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">items</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">items</span><span class="p">));</span> <span class="c1">// eslint-disable-line no-console</span>
+
+<span class="nx">async</span> <span class="kd">function</span> <span class="nx">checkInventory</span><span class="p">(</span><span class="nx">item</span><span class="err">:</span> <span class="nx">string</span><span class="p">,</span> <span class="nx">error</span><span class="p">)</span><span class="err">:</span> <span class="nx">Promise</span><span class="o">&lt;</span><span class="nx">string</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">~</span><span class="p">[</span><span class="s1">'AK47'</span><span class="p">,</span> <span class="s1">'stuffed bunny'</span><span class="p">].</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">item</span><span class="p">))</span> <span class="k">return</span> <span class="nx">item</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">(</span><span class="s1">'no supplies'</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="c1">// pattern matching</span>
+<span class="kr">const</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">match</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span>
+  <span class="nx">number</span><span class="p">,</span> <span class="nx">n</span> <span class="o">=&gt;</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">n</span><span class="o">*</span><span class="mi">2</span><span class="p">),</span>
+  <span class="nx">Person</span><span class="p">,</span> <span class="p">({</span> <span class="nx">name</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nx">name</span><span class="p">,</span> <span class="nx">name</span><span class="p">]</span>
+<span class="p">);</span>
+<span class="p">(</span><span class="na">x</span><span class="p">:</span> <span class="nb">Date</span><span class="p">);</span>
+
+<span class="c1">// express middleware example</span>
+<span class="kr">const</span> <span class="nx">middleware</span> <span class="o">=</span> <span class="nx">express</span><span class="p">.</span><span class="nx">middleware</span><span class="p">(</span><span class="nx">object</span><span class="p">({</span> <span class="na">headers</span><span class="p">:</span> <span class="nx">object</span><span class="p">({</span> <span class="s1">'my-custom-header'</span><span class="p">:</span> <span class="nx">string</span> <span class="p">})</span> <span class="p">}),</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">next</span><span class="p">());</span>
+
+<span class="c1">// express endpoint matching middleware (inspired to Spring RequestMapping)</span>
+<span class="kr">const</span> <span class="nx">requestMap1</span> <span class="o">=</span> <span class="nx">express</span><span class="p">.</span><span class="nx">requestMapping</span><span class="p">(</span><span class="nx">object</span><span class="p">({</span> <span class="na">body</span><span class="p">:</span> <span class="nx">Person</span> <span class="p">}),</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">age</span><span class="p">));</span>
+<span class="kr">const</span> <span class="nx">requestMap2</span> <span class="o">=</span> <span class="nx">express</span><span class="p">.</span><span class="nx">requestMapping</span><span class="p">(</span><span class="nx">object</span><span class="p">({</span> <span class="na">body</span><span class="p">:</span> <span class="nx">object</span><span class="p">({</span> <span class="na">username</span><span class="p">:</span> <span class="nx">string</span><span class="p">,</span> <span class="na">password</span><span class="p">:</span> <span class="nx">string</span> <span class="p">})</span> <span class="p">}),</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="cm">/* authenticate */</span><span class="p">});</span>
+<span class="c1">// app.use('/user', requestMap1);</span>
+<span class="c1">// app.use('/user', requestMap2);</span>
+
+<span class="kr">const</span> <span class="nx">Contact</span> <span class="o">=</span> <span class="nx">object</span><span class="p">({</span> <span class="na">name</span><span class="p">:</span> <span class="nx">string</span><span class="p">,</span> <span class="na">birth</span><span class="p">:</span> <span class="nx">string</span><span class="p">.</span><span class="nx">toDate</span><span class="p">(),</span> <span class="na">email</span><span class="p">:</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmail</span><span class="p">().</span><span class="nx">optional</span><span class="p">()</span> <span class="p">});</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">Contact</span><span class="p">.</span><span class="nx">parse</span><span class="p">({</span> <span class="na">name</span><span class="p">:</span> <span class="s1">'fred'</span><span class="p">,</span> <span class="na">birth</span><span class="p">:</span> <span class="nb">String</span><span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">),</span> <span class="na">email</span><span class="p">:</span> <span class="s1">'gobi301@gmail.com'</span> <span class="p">}));</span> <span class="c1">// eslint-disable-line no-console</span>
+
+<span class="c1">// ensure functions params, useful on user input functions</span>
+<span class="kr">const</span> <span class="nx">signUpUser</span> <span class="o">=</span> <span class="nx">takes</span><span class="p">(</span><span class="nx">string</span><span class="p">.</span><span class="nx">isEmail</span><span class="p">(),</span> <span class="nx">number</span><span class="p">)((</span><span class="nx">email</span><span class="p">,</span> <span class="nx">secretCoupon</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="err">`</span><span class="nx">user</span> <span class="nx">$</span><span class="p">{</span><span class="nx">email</span><span class="p">}</span> <span class="nx">added</span> <span class="kd">with</span> <span class="na">coupon</span><span class="p">:</span> <span class="nx">$</span><span class="p">{</span><span class="nx">secretCoupon</span><span class="p">}</span><span class="err">`</span><span class="p">);</span>
+<span class="nx">signUpUser</span><span class="p">(</span><span class="s1">'gobi301@gmail.com'</span><span class="p">,</span> <span class="mi">666</span><span class="p">);</span>
+
+<span class="c1">// Don't Repeat Yourself</span>
+<span class="c1">// you can use a type of a defined schema, instead of</span>
+<span class="c1">// var yogi: { name: string, age: ?number, toys: Array&lt;string&gt; }</span>
+<span class="kd">var</span> <span class="na">yogi</span><span class="p">:</span> <span class="k">typeof</span> <span class="nx">Person</span><span class="p">.</span><span class="nx">type</span><span class="p">;</span> <span class="c1">// eslint-disable-line no-unused-vars</span>
+
+<span class="c1">// runtime introspection</span>
+<span class="kr">const</span> <span class="na">Name</span><span class="p">:</span> <span class="nx">Type</span><span class="o">&lt;</span><span class="nx">string</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nx">Person</span><span class="p">.</span><span class="nx">schema</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span> <span class="c1">// eslint-disable-line no-unused-vars</span>
+<span class="kr">const</span> <span class="na">Age</span><span class="p">:</span> <span class="nx">Type</span><span class="o">&lt;</span><span class="p">?</span><span class="nx">number</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nx">Person</span><span class="p">.</span><span class="nx">schema</span><span class="p">.</span><span class="nx">age</span><span class="p">;</span> <span class="c1">// eslint-disable-line no-unused-vars</span>
+
+<span class="c1">// const tup: [string, number, Date] = ...</span>
+<span class="kr">const</span> <span class="nx">tup</span> <span class="o">=</span> <span class="nx">tuple</span><span class="p">([</span><span class="nx">string</span><span class="p">,</span> <span class="nx">number</span><span class="p">,</span> <span class="nx">instanceOf</span><span class="p">(</span><span class="nb">Date</span><span class="p">)]).</span><span class="nx">parse</span><span class="p">([</span><span class="s1">'hello'</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">]);</span>  <span class="c1">// eslint-disable-line no-unused-vars</span>
+
+<span class="c1">// { a: string, b: number, c: Array&lt;string | number | Date&gt;, d: string, e: Date }</span>
+<span class="kr">const</span> <span class="nx">Schema</span> <span class="o">=</span> <span class="nx">object</span><span class="p">({</span>
+  <span class="na">a</span><span class="p">:</span> <span class="nx">string</span><span class="p">,</span>
+  <span class="na">b</span><span class="p">:</span> <span class="nx">number</span><span class="p">.</span><span class="nx">optional</span><span class="p">(),</span>
+  <span class="na">c</span><span class="p">:</span> <span class="nx">arrayOf</span><span class="p">(</span><span class="nx">string</span><span class="p">.</span><span class="nx">or</span><span class="p">(</span><span class="nx">number</span><span class="p">).</span><span class="nx">or</span><span class="p">(</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nb">Date</span><span class="p">))),</span>
+  <span class="na">d</span><span class="p">:</span> <span class="nx">string</span><span class="p">.</span><span class="nx">refine</span><span class="p">((</span><span class="nx">s</span><span class="p">,</span> <span class="nx">error</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="c1">// refinements must return the same type</span>
+    <span class="k">if</span> <span class="p">(</span><span class="sr">/el/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">s</span><span class="p">))</span> <span class="k">return</span> <span class="nx">s</span><span class="p">;</span>
+    <span class="k">throw</span> <span class="nx">error</span><span class="p">(</span><span class="nb">String</span><span class="p">(</span><span class="sr">/el/</span><span class="p">));</span> <span class="c1">// this throws proper error</span>
+  <span class="p">}).</span><span class="nx">revalidate</span><span class="p">(),</span> <span class="c1">// add a revalidate if want to be sure not changed type during refinement</span>
+  <span class="na">e</span><span class="p">:</span> <span class="nx">string</span><span class="p">.</span><span class="nx">to</span><span class="p">(</span><span class="nx">s</span> <span class="o">=&gt;</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">s</span><span class="p">))</span> <span class="c1">// with .to() you can convert types</span>
+<span class="p">});</span>
+
+<span class="kr">const</span> <span class="nx">toBeValidated</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">a</span><span class="p">:</span> <span class="s1">'hi'</span><span class="p">,</span>
+  <span class="na">c</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">,</span> <span class="s1">'2017'</span><span class="p">],</span>
+  <span class="na">d</span><span class="p">:</span> <span class="s1">'hello'</span><span class="p">,</span>
+  <span class="na">e</span><span class="p">:</span> <span class="s1">'Mon Feb 27 2017 10:00:15 GMT-0800 (PST)'</span>
+<span class="p">};</span>
+
+<span class="c1">// validate input object, returns original object if valid, throws otherwise</span>
+<span class="c1">// VType object has .validate() method that returns original object</span>
+<span class="c1">// arrayOf, tuple, mapping, object, objectExact ha V prefixed variants,</span>
+<span class="c1">// and can't contain validators that change input</span>
+<span class="nx">Vobject</span><span class="p">({</span> <span class="na">a</span><span class="p">:</span> <span class="nx">string</span> <span class="p">}).</span><span class="nx">validate</span><span class="p">({</span> <span class="na">a</span><span class="p">:</span> <span class="s1">'hello'</span> <span class="p">})</span> <span class="o">===</span> <span class="nx">toBeValidated</span><span class="p">;</span> <span class="c1">// = true</span>
+
+<span class="c1">// same as validate, but it make a copy in case of: arrayOf, tuple, mapping, object, objectExact</span>
+<span class="c1">// it can be used when using refinemnts that return not the original value</span>
+<span class="c1">// and with .to() for conversions</span>
+<span class="nx">Schema</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">toBeValidated</span><span class="p">)</span> <span class="o">===</span> <span class="nx">toBeValidated</span><span class="p">;</span> <span class="c1">// = false</span>
+<span class="c1">// deepEqual(Schema.parse(toBeValidated), toBeValidated); // = true</span>
+
+<span class="c1">// shortcuts</span>
+<span class="nx">Vobject</span><span class="p">({</span> <span class="na">a</span><span class="p">:</span> <span class="nx">string</span> <span class="p">}).</span><span class="nx">isValid</span><span class="p">({</span> <span class="na">a</span><span class="p">:</span> <span class="s1">'hello'</span> <span class="p">});</span> <span class="c1">// : boolean</span>
+<span class="nx">Vobject</span><span class="p">({</span> <span class="na">a</span><span class="p">:</span> <span class="nx">string</span> <span class="p">}).</span><span class="nx">validateResult</span><span class="p">({</span> <span class="na">a</span><span class="p">:</span> <span class="s1">'hello'</span> <span class="p">});</span> <span class="c1">// : { value: ... } | { error: ... }</span>
+<span class="nx">Schema</span><span class="p">.</span><span class="nx">parseResult</span><span class="p">(</span><span class="nx">toBeValidated</span><span class="p">);</span> <span class="c1">// : { value: ... } | { error: ... }</span>
+
+<span class="c1">// you can chain validators, to reuse them or check if your custom type converter works</span>
+<span class="nx">string</span><span class="p">.</span><span class="nx">to</span><span class="p">(</span><span class="nx">s</span> <span class="o">=&gt;</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">s</span><span class="p">)).</span><span class="nx">chain</span><span class="p">(</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nb">Date</span><span class="p">));</span>
+
+<span class="c1">// to get JSON serializable error report</span>
+<span class="k">try</span> <span class="p">{</span> <span class="nx">Schema</span><span class="p">.</span><span class="nx">parse</span><span class="p">();</span> <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span> <span class="p">}</span> <span class="c1">// eslint-disable-line no-console</span>
+
+<span class="c1">// sometimes flow will not remember types, ex:</span>
+<span class="nx">object</span><span class="p">({</span> <span class="na">x</span><span class="p">:</span> <span class="nx">number</span><span class="p">.</span><span class="nx">to</span><span class="p">(</span><span class="nx">n</span> <span class="o">=&gt;</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">n</span><span class="p">))</span> <span class="p">}).</span><span class="nx">parse</span><span class="p">({</span> <span class="na">x</span><span class="p">:</span> <span class="mi">4</span> <span class="p">});</span> <span class="c1">// unknown type</span>
+
+<span class="c1">// solution</span>
+<span class="kr">const</span> <span class="na">x2</span><span class="p">:</span> <span class="nx">Type</span><span class="o">&lt;</span><span class="nb">Date</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nx">number</span><span class="p">.</span><span class="nx">to</span><span class="p">(</span><span class="nx">n</span> <span class="o">=&gt;</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">n</span><span class="p">));</span>
+<span class="nx">object</span><span class="p">({</span> <span class="nx">x2</span> <span class="p">}).</span><span class="nx">parse</span><span class="p">({</span> <span class="na">x2</span><span class="p">:</span> <span class="mi">4</span> <span class="p">});</span> <span class="c1">// : { x: Date }</span>
+
+<span class="c1">// type-safe composition</span>
+<span class="kr">const</span> <span class="nx">str2num</span> <span class="o">=</span> <span class="p">(</span><span class="na">s</span><span class="p">:</span> <span class="nx">string</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nb">Number</span><span class="p">(</span><span class="nx">s</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">div</span> <span class="o">=</span> <span class="p">(</span><span class="na">n</span><span class="p">:</span> <span class="nx">number</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">n</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">num2str</span> <span class="o">=</span> <span class="p">(</span><span class="na">n</span><span class="p">:</span> <span class="nx">number</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nb">String</span><span class="p">(</span><span class="nx">n</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">str2arr</span> <span class="o">=</span> <span class="p">(</span><span class="na">s</span><span class="p">:</span> <span class="nx">string</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">s</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">'1'</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">nonSense</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">compose</span><span class="p">(</span><span class="nx">str2num</span><span class="p">).</span><span class="nx">compose</span><span class="p">(</span><span class="nx">div</span><span class="p">).</span><span class="nx">compose</span><span class="p">(</span><span class="nx">num2str</span><span class="p">).</span><span class="nx">compose</span><span class="p">(</span><span class="nx">str2arr</span><span class="p">);</span>
+<span class="nx">nonSense</span><span class="p">.</span><span class="nx">parseResult</span><span class="p">(</span><span class="s1">'1234567890'</span><span class="p">);</span> <span class="c1">// : Array&lt;string&gt;</span>
+
+<span class="c1">// you can convert sync type to async one</span>
+<span class="nx">string</span><span class="p">.</span><span class="nx">async</span><span class="p">();</span>
+</code></pre>
+</div>
+
+<p>if you do not want import the entire library, you can find single validators in
+<code class="highlighter-rouge">import { object } from 'flow-validator/sync/object';</code>
+or
+<code class="highlighter-rouge">import { asyncArrayOf } from 'flow-validator/async/asyncArrayOf';</code></p>
+
+<p>for minified version <code class="highlighter-rouge">require('/node_modules/flow-validator/lib/flow-validator.min.js')</code></p>
+
+<h1 id="implemented-types--combinators">Implemented types / combinators</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Flow syntax</th>
+      <th>Runtime type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>string</td>
+      <td><code class="highlighter-rouge">string</code></td>
+      <td><code class="highlighter-rouge">string</code></td>
+    </tr>
+    <tr>
+      <td>number</td>
+      <td><code class="highlighter-rouge">number</code></td>
+      <td><code class="highlighter-rouge">number</code></td>
+    </tr>
+    <tr>
+      <td>boolean</td>
+      <td><code class="highlighter-rouge">boolean</code></td>
+      <td><code class="highlighter-rouge">boolean</code></td>
+    </tr>
+    <tr>
+      <td>generic object</td>
+      <td><code class="highlighter-rouge">Object</code></td>
+      <td><code class="highlighter-rouge">objectType</code></td>
+    </tr>
+    <tr>
+      <td>generic function</td>
+      <td><code class="highlighter-rouge">Function</code></td>
+      <td><code class="highlighter-rouge">Function</code></td>
+    </tr>
+    <tr>
+      <td>instance of <code class="highlighter-rouge">C</code></td>
+      <td><code class="highlighter-rouge">C</code></td>
+      <td><code class="highlighter-rouge">instanceOf(C)</code></td>
+    </tr>
+    <tr>
+      <td>class of <code class="highlighter-rouge">C</code></td>
+      <td><code class="highlighter-rouge">Class&lt;C&gt;</code></td>
+      <td><code class="highlighter-rouge">classOf(C)</code></td>
+    </tr>
+    <tr>
+      <td>array</td>
+      <td><code class="highlighter-rouge">Array&lt;A&gt;</code></td>
+      <td><code class="highlighter-rouge">arrayOf(A)</code></td>
+    </tr>
+    <tr>
+      <td>intersection</td>
+      <td><code class="highlighter-rouge">A &amp; B</code></td>
+      <td><code class="highlighter-rouge">intersection(A, B)</code></td>
+    </tr>
+    <tr>
+      <td>union</td>
+      <td><code class="highlighter-rouge">A | B</code></td>
+      <td><code class="highlighter-rouge">union(A, B)</code></td>
+    </tr>
+    <tr>
+      <td>literal</td>
+      <td><code class="highlighter-rouge">'s'</code></td>
+      <td><code class="highlighter-rouge">literal('s')</code></td>
+    </tr>
+    <tr>
+      <td>optional</td>
+      <td><code class="highlighter-rouge">?A</code></td>
+      <td><code class="highlighter-rouge">optional(A)</code></td>
+    </tr>
+    <tr>
+      <td>map</td>
+      <td><code class="highlighter-rouge"><span class="p">{</span><span class="w"> </span><span class="err">[key:</span><span class="w"> </span><span class="err">A]:</span><span class="w"> </span><span class="err">B</span><span class="w"> </span><span class="p">}</span></code></td>
+      <td><code class="highlighter-rouge">mapping(A, B)</code></td>
+    </tr>
+    <tr>
+      <td>refinement</td>
+      <td>✘</td>
+      <td><code class="highlighter-rouge">number.refine(n =&gt; { if (n &gt; 10) return n; throw new Error(); })</code></td>
+    </tr>
+    <tr>
+      <td>object</td>
+      <td><code class="highlighter-rouge"><span class="p">{</span><span class="w"> </span><span class="err">name:</span><span class="w"> </span><span class="err">string</span><span class="w"> </span><span class="p">}</span></code></td>
+      <td><code class="highlighter-rouge">object({ name: string })</code></td>
+    </tr>
+    <tr>
+      <td>exact object</td>
+      <td><code class="highlighter-rouge"><span class="p">{</span><span class="err">|</span><span class="w"> </span><span class="err">name:</span><span class="w"> </span><span class="err">string</span><span class="w"> </span><span class="err">|</span><span class="p">}</span></code></td>
+      <td><code class="highlighter-rouge">objectExact({ name: string })</code></td>
+    </tr>
+    <tr>
+      <td>null</td>
+      <td><code class="highlighter-rouge">null</code></td>
+      <td><code class="highlighter-rouge">isNull</code></td>
+    </tr>
+    <tr>
+      <td>undefined</td>
+      <td><code class="highlighter-rouge">void</code></td>
+      <td><code class="highlighter-rouge">isUndefined</code></td>
+    </tr>
+    <tr>
+      <td>not checked</td>
+      <td><code class="highlighter-rouge">any</code></td>
+      <td><code class="highlighter-rouge">isAny</code></td>
+    </tr>
+    <tr>
+      <td>all types</td>
+      <td><code class="highlighter-rouge">mixed</code></td>
+      <td><code class="highlighter-rouge">isMixed</code></td>
+    </tr>
+    <tr>
+      <td>function</td>
+      <td><code class="highlighter-rouge">(a: A) =&gt; B</code></td>
+      <td><code class="highlighter-rouge">takes(A)(returns(B)(...))</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="included-refinements">Included refinements</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Refinements</th>
+      <th>Transformations</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>string</td>
+      <td><code class="highlighter-rouge">.isEmail() .isValidDate() .minLength() .maxLength() .regexp()</code></td>
+      <td><code class="highlighter-rouge">.toDate()</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="technical-documentation"><a href="https://freddi301.github.io/flow-validator/doc">Technical documentation</a></h1>
+
+<p>for older versions:</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>git clone https://github.com/freddi301/flow-validator.git
+cd flow-validator
+yarn
+npm run doc:serve
+</code></pre>
+</div>
+
+<h1 id="feature-requests-wanted">Feature Requests Wanted</h1>
+<p>(open issue, include examples or links)</p>
+
+<h2 id="inspiration">Inspiration</h2>
+
+<p><a href="https://github.com/gcanti/flow-io">flow-io</a> (checkout <a href="https://github.com/gcanti/io-ts">io-ts</a> too)</p>
+
+<h2 id="alternatives">Alternatives</h2>
+<ul>
+  <li><a href="https://github.com/gcanti/flow-io">flow-io</a></li>
+  <li><a href="https://github.com/andreypopp/validated">validated</a></li>
+</ul>
+
+<h2 id="alternatives---not-flow-typed">Alternatives - not flow typed</h2>
+<ul>
+  <li><a href="https://github.com/hapijs/joi">joi</a></li>
+</ul>
+
+<h1 id="planned-features">Planned Features</h1>
+
+<ul>
+  <li>[ ] 0.6.0
+    <ul>
+      <li>asyncTakes() asyncVtakes()</li>
+      <li>returns() Vreturns() asyncReturns() asyncVreturns()</li>
+      <li>readme += alternate use: json graphql alternative</li>
+      <li>Vmatch asyncMatch asyncVmatch</li>
+      <li>overloading</li>
+      <li>monad do notation using row polymorphism</li>
+      <li>auto row currying (aka builder)</li>
+    </ul>
+  </li>
+  <li>[ ] 0.7.0
+    <ul>
+      <li>include https://github.com/hapijs/joi/blob/master/API.md features</li>
+    </ul>
+  </li>
+  <li>[ ] 0.8.0
+    <ul>
+      <li>generate documentation from types (md, html, jsonschema, blueprint, mson)</li>
+      <li>json schema validation</li>
+    </ul>
+  </li>
+  <li>[ ] 1.0.0
+    <ul>
+      <li>test 100%</li>
+      <li>doc examples for all validators</li>
+      <li>better flow coverage where possible</li>
+      <li>readme += new type example</li>
+    </ul>
+  </li>
+  <li>[ ] 2.0.0
+    <ul>
+      <li>doc 100%</li>
+      <li>performance comparison</li>
+      <li>optimize, use lodash, cache optional() singleton and frequently used types</li>
+      <li>literal values</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<p><a href="https://codeclimate.com/github/freddi301/flow-validator"><img src="https://codeclimate.com/github/freddi301/flow-validator/badges/gpa.svg" alt="Code Climate" /></a>
+<a href="https://codeclimate.com/github/freddi301/flow-validator/coverage"><img src="https://codeclimate.com/github/freddi301/flow-validator/badges/coverage.svg" alt="Test Coverage" /></a>
+<a href="https://codeclimate.com/github/freddi301/flow-validator"><img src="https://codeclimate.com/github/freddi301/flow-validator/badges/issue_count.svg" alt="Issue Count" /></a></p>
+
+<p><a href="https://www.bithound.io/github/freddi301/flow-validator"><img src="https://www.bithound.io/github/freddi301/flow-validator/badges/score.svg" alt="bitHound Overall Score" /></a>
+<a href="https://www.bithound.io/github/freddi301/flow-validator"><img src="https://www.bithound.io/github/freddi301/flow-validator/badges/code.svg" alt="bitHound Code" /></a>
+<a href="https://www.bithound.io/github/freddi301/flow-validator/master/dependencies/npm"><img src="https://www.bithound.io/github/freddi301/flow-validator/badges/dependencies.svg" alt="bitHound Dependencies" /></a>
+<a href="https://www.bithound.io/github/freddi301/flow-validator/master/dependencies/npm"><img src="https://www.bithound.io/github/freddi301/flow-validator/badges/devDependencies.svg" alt="bitHound Dev Dependencies" /></a></p>
+
+<p><a href="https://nodesecurity.io/orgs/frederik-batuna/projects/f9a6e9b9-c6d8-4cfb-84c0-548310794dcb"><img src="https://nodesecurity.io/orgs/frederik-batuna/projects/f9a6e9b9-c6d8-4cfb-84c0-548310794dcb/badge" alt="NSP Status" /></a>
+<img src="https://reposs.herokuapp.com/?path=freddi301/flow-validator" alt="repo size" /></p>
+
+<p><a href="https://nodei.co/npm/flow-validator/"><img src="https://nodei.co/npm/flow-validator.png?downloads=true&amp;downloadRank=true&amp;stars=true" alt="NPM" /></a></p>
+
+
+      
+<footer class="site-footer">
+  <span class="site-footer-owner"><a href="">flow-validator</a> is maintained by <a href="https://github.com/freddi301">Frederik Batuna</a>.</span>
+</footer>
+
+
+    </section>
+
+  </body>
+</html>
