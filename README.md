@@ -171,7 +171,7 @@ for minified version ```require('/node_modules/flow-validator/lib/flow-validator
 
 | Type | Refinements | Transformations |
 |------|-------------|-----------------|
-| string | `.isEmail() .isValidDate()` | `.toDate()`
+| string | `.isEmail() .isValidDate() .minLength() .maxLength() .regexp()` | `.toDate()`
 
 # [Technical documentation](https://freddi301.github.io/flow-validator/doc)
 
@@ -199,11 +199,10 @@ npm run doc:serve
 
 # Planned Features
 
-- [ ] 0.5.0
+- [ ] 0.6.0
   - asyncTakes() asyncVtakes()
   - returns() Vreturns() asyncReturns() asyncVreturns()
   - readme += alternate use: json graphql alternative
-- [ ] 0.6.0
   - Vmatch asyncMatch asyncVmatch
   - overloading
   - monad do notation using row polymorphism
@@ -223,7 +222,6 @@ npm run doc:serve
   - performance comparison
   - optimize, use lodash, cache optional() singleton and frequently used types
   - literal values
-- use https://waffle.io/ for issue kanban
 
 ---
 
