@@ -22,6 +22,7 @@ Object validation with proper flow types and more.
 
 ```javascript
 import { arrayOf, string, number, object, instanceOf, Type, Vobject, asyncArrayOf, tuple, takes, match } from 'flow-validator';
+import { express } from 'flow-validator/express';
 
 // { name: string, age: ?number, toys: Array<string> }
 const Person = object({ name: string, age: number.optional(), toys: arrayOf(string) });

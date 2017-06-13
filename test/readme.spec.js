@@ -2,7 +2,8 @@
 /* eslint-env mocha, browser */
 /* eslint-disable no-unused-vars */
 
-import { arrayOf, string, number, object, instanceOf, Type, Vobject, asyncArrayOf, tuple, takes, match, express } from '../src';
+import { arrayOf, string, number, object, instanceOf, Type, Vobject, asyncArrayOf, tuple, takes, match } from '../src';
+import { express } from '../src/express';
 
 describe('readme code', () => {
   it('works', () => {
