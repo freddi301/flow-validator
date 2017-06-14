@@ -202,7 +202,8 @@ npm run doc:serve
 
 - [ ] 0.6.0
   - asyncTakes() asyncVtakes()
-  - returns() Vreturns() asyncReturns() asyncVreturns()
+  - [x] returns() Vreturns()
+  - asyncReturns() asyncVreturns()
   - readme += alternate use: json graphql alternative
   - Vmatch asyncMatch asyncVmatch
   - overloading
@@ -212,8 +213,8 @@ npm run doc:serve
   - include https://github.com/hapijs/joi/blob/master/API.md features
   - typescript support
 - [ ] 0.8.0
-  - generate documentation from types (md, html, jsonschema, blueprint, mson)
-  - generate flow-validator validators from flow annotations an jsonschema (cli, runtime, compiletime, startuptime)
+  - generate documentation from types (md, html, jsonschema, blueprint, mson, graphql-schema)
+  - generate flow-validator validators from flow annotations, jsonschema and graphql-schema (cli, runtime, compiletime, startuptime)
   - json schema validation
 - [ ] 0.9.0
   - refactor validators to contain metadata
@@ -230,6 +231,10 @@ npm run doc:serve
   - performance comparison
   - optimize, use lodash, cache optional() singleton and frequently used types
   - literal values
+
+### Other
+
+- move documentation to surge.sh
 
 ---
 

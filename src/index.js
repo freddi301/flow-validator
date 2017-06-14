@@ -42,3 +42,4 @@ export { asyncVobject } from './async/asyncVobject';
 export { asyncObjectExact } from './async/asyncObjectExact';
 export { asyncVobjectExact } from './async/asyncVobjectExact';
 export { match } from './sync/match';
+export { returns, Vreturns } from './sync/returns';

@@ -82,7 +82,7 @@
     "documentation": "4.0.0-beta.18",
     "eslint": "3.19.0",
     "eslint-plugin-flowtype": "2.34.0",
-    "flow-bin": "0.47.0",
+    "flow-bin": "0.48.0",
     "flow-copy-source": "^1.1.0",
     "flow-typed": "^2.1.2",
     "husky": "^0.13.2",
