@@ -45,6 +45,7 @@
 <h2 id="usage">Usage</h2>
 
 <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kr">import</span> <span class="p">{</span> <span class="nx">arrayOf</span><span class="p">,</span> <span class="nx">string</span><span class="p">,</span> <span class="nx">number</span><span class="p">,</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">instanceOf</span><span class="p">,</span> <span class="nx">Type</span><span class="p">,</span> <span class="nx">Vobject</span><span class="p">,</span> <span class="nx">asyncArrayOf</span><span class="p">,</span> <span class="nx">tuple</span><span class="p">,</span> <span class="nx">takes</span><span class="p">,</span> <span class="nx">match</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">'flow-validator'</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">express</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">'flow-validator/express'</span><span class="p">;</span>
 
 <span class="c1">// { name: string, age: ?number, toys: Array&lt;string&gt; }</span>
 <span class="kr">const</span> <span class="nx">Person</span> <span class="o">=</span> <span class="nx">object</span><span class="p">({</span> <span class="na">name</span><span class="p">:</span> <span class="nx">string</span><span class="p">,</span> <span class="na">age</span><span class="p">:</span> <span class="nx">number</span><span class="p">.</span><span class="nx">optional</span><span class="p">(),</span> <span class="na">toys</span><span class="p">:</span> <span class="nx">arrayOf</span><span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="p">});</span>
@@ -348,12 +349,22 @@ npm run doc:serve
   <li>[ ] 0.7.0
     <ul>
       <li>include https://github.com/hapijs/joi/blob/master/API.md features</li>
+      <li>typescript support</li>
     </ul>
   </li>
   <li>[ ] 0.8.0
     <ul>
       <li>generate documentation from types (md, html, jsonschema, blueprint, mson)</li>
+      <li>generate flow-validator validators from flow annotations an jsonschema (cli, runtime, compiletime, startuptime)</li>
       <li>json schema validation</li>
+    </ul>
+  </li>
+  <li>[ ] 0.9.0
+    <ul>
+      <li>refactor validators to contain metadata</li>
+      <li>refactor errors to contain metadata</li>
+      <li>write visitors for validators and errors</li>
+      <li>write default interpreters for errors json and optionally localized text</li>
     </ul>
   </li>
   <li>[ ] 1.0.0

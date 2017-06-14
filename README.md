@@ -22,6 +22,7 @@ Object validation with proper flow types and more.
 
 ```javascript
 import { arrayOf, string, number, object, instanceOf, Type, Vobject, asyncArrayOf, tuple, takes, match } from 'flow-validator';
+import { express } from 'flow-validator/express';
 
 // { name: string, age: ?number, toys: Array<string> }
 const Person = object({ name: string, age: number.optional(), toys: arrayOf(string) });
@@ -209,9 +210,16 @@ npm run doc:serve
   - auto row currying (aka builder)
 - [ ] 0.7.0
   - include https://github.com/hapijs/joi/blob/master/API.md features
+  - typescript support
 - [ ] 0.8.0
   - generate documentation from types (md, html, jsonschema, blueprint, mson)
+  - generate flow-validator validators from flow annotations an jsonschema (cli, runtime, compiletime, startuptime)
   - json schema validation
+- [ ] 0.9.0
+  - refactor validators to contain metadata
+  - refactor errors to contain metadata
+  - write visitors for validators and errors
+  - write default interpreters for errors json and optionally localized text
 - [ ] 1.0.0
   - test 100%
   - doc examples for all validators
