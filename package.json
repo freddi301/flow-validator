@@ -24,9 +24,10 @@
     "doc:build": "rm -r doc/*; mv src/index.js src/index; documentation build src -g --document-exported -f html -o doc --sort-order alpha; mv src/index src/index.js",
     "doc:publish": "./scripts/doc_build.sh && git push origin gh-pages:gh-pages",
     "precommit": "npm run doc:lint && npm run eslint && npm run flow && npm run checkdeps && npm test && npm run coverage && npm run build && npm run build:min",
-    "prepublish": "npm run precommit",
-    "postpublish": "npm run doc:publish",
-    "bithound": "bithound check git@github.com:freddi301/flow-validator.git"
+    "prepublish": "npm run precommit && npm run bithound",
+    "postpublish": "npm run doc:publish && npm run release:notes",
+    "bithound": "bithound check git@github.com:freddi301/flow-validator.git",
+    "release:notes": "release"
   },
   "tags": [
     "flow",
