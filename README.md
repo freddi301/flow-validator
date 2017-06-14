@@ -201,38 +201,43 @@ npm run doc:serve
 # Planned Features
 
 - [ ] 0.6.0
-  - asyncTakes() asyncVtakes()
+  - [ ] asyncTakes() asyncVtakes()
   - [x] returns() Vreturns()
-  - asyncReturns() asyncVreturns()
-  - readme += alternate use: json graphql alternative
-  - Vmatch asyncMatch asyncVmatch
-  - overloading
-  - monad do notation using row polymorphism
-  - auto row currying (aka builder)
+  - [ ] asyncReturns() asyncVreturns()
 - [ ] 0.7.0
-  - include https://github.com/hapijs/joi/blob/master/API.md features
-  - typescript support
+  - [ ] include https://github.com/hapijs/joi/blob/master/API.md features
+  - [ ] typescript support
 - [ ] 0.8.0
-  - generate documentation from types (md, html, jsonschema, blueprint, mson, graphql-schema)
-  - generate flow-validator validators from flow annotations, jsonschema and graphql-schema (cli, runtime, compiletime, startuptime)
-  - json schema validation
+  - [ ] generate documentation from types (md, html, jsonschema, blueprint, mson, graphql-schema)
+  - [ ] generate flow-validator validators from flow annotations, jsonschema and graphql-schema (cli, runtime, compiletime, startuptime)
+  - [ ] json schema validation
 - [ ] 0.9.0
-  - refactor validators to contain metadata
-  - refactor errors to contain metadata
-  - write visitors for validators and errors
-  - write default interpreters for errors json and optionally localized text
+  - [ ] refactor validators to contain metadata
+  - [ ] refactor errors to contain metadata
+  - [ ] write visitors for validators and errors
+  - [ ] write default interpreters for errors json and optionally localized text
 - [ ] 1.0.0
-  - test 100%
-  - doc examples for all validators
-  - better flow coverage where possible
-  - readme += new type example
+  - [ ] test 100%
+  - [ ] doc examples for all validators
+  - [ ] better flow coverage where possible
+  - [ ] readme += new type example
 - [ ] 2.0.0
-  - doc 100%
-  - performance comparison
-  - optimize, use lodash, cache optional() singleton and frequently used types
-  - literal values
+  - [ ] doc 100%
+  - [ ] performance comparison
+  - [ ] optimize, use lodash, cache optional() singleton and frequently used types
 
-### Other
+#### Experimental
+
+  - [ ] readme += alternate use: json graphql alternative
+  - [ ] rewrite match
+  - [ ] Vmatch asyncMatch asyncVmatch
+  - [ ] overloading
+  - [ ] monad do notation using row polymorphism
+  - [ ] auto row currying (aka builder)
+  - [ ] literal values
+
+
+#### Other
 
 - move documentation to surge.sh
 
