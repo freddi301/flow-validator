@@ -3,6 +3,8 @@
 export { ValidationError } from './sync/ValidationError';
 export { Type } from './sync/Type';
 export { VType } from './sync/VType';
+export { AsyncType } from './async/AsyncType';
+export { AsyncVType } from './async/AsyncVType';
 export {
   empty, isNull, isUndefined, noProperty, isMixed, isAny,
   number, boolean, objectType, functionType,
@@ -43,3 +45,4 @@ export { asyncObjectExact } from './async/asyncObjectExact';
 export { asyncVobjectExact } from './async/asyncVobjectExact';
 export { match } from './sync/match';
 export { returns, Vreturns } from './sync/returns';
+export { asyncTakes, asyncVtakes } from './async/asyncTakes';
