@@ -201,8 +201,8 @@ npm run doc:serve
 # Planned Features
 
 - [ ] 0.6.0
-  - [ ] asyncTakes() asyncVtakes()
-  - [x] returns() Vreturns()
+  - [X] asyncTakes() asyncVtakes()
+  - [X] returns() Vreturns()
   - [ ] asyncReturns() asyncVreturns()
 - [ ] 0.7.0
   - [ ] include https://github.com/hapijs/joi/blob/master/API.md features
