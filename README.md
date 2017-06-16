@@ -189,21 +189,19 @@ npm run doc:serve
 
 ## Inspiration
 
-[flow-io](https://github.com/gcanti/flow-io) (checkout [io-ts](https://github.com/gcanti/io-ts) too)
+[flow-io](https://github.com/gcanti/flow-io) (checkout [io-ts](https://github.com/gcanti/io-ts) too for typescript)
 
 ## Alternatives
 - [flow-io](https://github.com/gcanti/flow-io)
 - [validated](https://github.com/andreypopp/validated)
+- 
 
-## Alternatives - not flow typed
+## Other Alternatives - not flow typed
 - [joi](https://github.com/hapijs/joi)
+- [tcomb](https://github.com/gcanti/tcomb)
 
 # Planned Features
 
-- [ ] 0.6.0
-  - [X] asyncTakes() asyncVtakes()
-  - [X] returns() Vreturns()
-  - [ ] asyncReturns() asyncVreturns()
 - [ ] 0.7.0
   - [ ] include https://github.com/hapijs/joi/blob/master/API.md features
   - [ ] typescript support
