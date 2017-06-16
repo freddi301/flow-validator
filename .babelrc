@@ -5,7 +5,7 @@
       {
         "targets": {
           "uglify": true,
-          "node": 0.12,
+          "node": 6,
           "browsers": [
             "last 2 versions",
             "safari >= 9",

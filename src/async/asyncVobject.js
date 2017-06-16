@@ -7,7 +7,7 @@ import { objectType } from '../sync/base';
 export class AsyncVObjectType<S: {[key: string]: AsyncVType<any>}, T: $ObjMap<S, <F>(v: AsyncVType<F>) => F>> extends AsyncVType<T> {
   schema: S;
   constructor(schema: S, validate: (value: mixed) => Promise<T>) {
-    super('object', validate);
+    super('asyncObject', validate);
     this.schema = schema;
   }
 }

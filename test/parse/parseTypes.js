@@ -35,6 +35,6 @@ const getAsts = (files: FileNode): Array<{ path: string, ast: Object }> => {
   return asts;
 };
 
-const asts = getAsts(tree);
+const asts = getAsts(tree); // eslint-disable-line
 
-console.dir(asts, { depth: null, colors: true }); // eslint-disable-line
+// console.dir(asts, { depth: null, colors: true });
