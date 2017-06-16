@@ -12,3 +12,9 @@ package.json
 .travis.yml
 .eslintrc
 .babelrc
+.vscode
+.flow-typed
+.bithoundrc
+.babelrc
+.flowconfig
+.babelrc

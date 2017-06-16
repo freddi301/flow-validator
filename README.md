@@ -140,8 +140,6 @@ if you do not want import the entire library, you can find single validators in
 or
 ```import { asyncArrayOf } from 'flow-validator/async/asyncArrayOf';```
 
-for minified version ```require('/node_modules/flow-validator/lib/flow-validator.min.js')```
-
 # Implemented types / combinators
 
 | Type | Flow syntax | Runtime type |
