@@ -8,7 +8,7 @@
     "lib"
   ],
   "scripts": {
-    "eslint": "eslint src && eslint test",
+    "eslint": "eslint .",
     "flow": "flow check .",
     "checkdeps": "nsp check",
     "test": "mocha --recursive",
@@ -18,12 +18,11 @@
     "codeclimate:coverage": "nyc npm test && nyc report --reporter=text-lcov | codeclimate-test-reporter",
     "coverage:ci": "nyc npm test && nyc report --reporter=text-lcov | coveralls && nyc report --reporter=text-lcov | codeclimate-test-reporter",
     "build": "rm -rf lib/* && babel src -d lib --source-maps && flow-copy-source -v src lib",
-    "build:min": "uglifyjs ./lib/index.js -o ./lib/flow-validator.min.js --source-map ./lib/flow-validator.min.js.map -c -m",
     "doc:serve": "documentation serve src -g --document-exported -w -f html",
     "doc:lint": "documentation lint src -g",
     "doc:build": "rm -r doc/*; mv src/index.js src/index; documentation build src -g --document-exported -f html -o doc --sort-order alpha; mv src/index src/index.js",
     "doc:publish": "./scripts/doc_build.sh && git push origin gh-pages:gh-pages",
-    "precommit": "npm run doc:lint && npm run eslint && npm run flow && npm run checkdeps && npm test && npm run coverage && npm run build && npm run build:min",
+    "precommit": "npm run doc:lint && npm run eslint && npm run flow && npm run checkdeps && npm test && npm run coverage && npm run build",
     "prepublish": "npm run precommit",
     "postpublish": "npm run doc:publish && npm run release:notes",
     "bithound": "bithound check git@github.com:freddi301/flow-validator.git",
@@ -81,7 +80,7 @@
     "codeclimate-test-reporter": "0.5.0",
     "coveralls": "2.13.1",
     "documentation": "4.0.0-beta.18",
-    "eslint": "3.19.0",
+    "eslint": "4.0.0",
     "eslint-plugin-flowtype": "2.34.0",
     "flow-bin": "0.48.0",
     "flow-copy-source": "^1.1.0",
@@ -91,8 +90,7 @@
     "mocha": "3.4.2",
     "nsp": "2.6.3",
     "nyc": "11.0.2",
-    "release": "^1.2.3",
-    "uglify-js": "2.8.28"
+    "release": "^1.2.3"
   },
   "dependencies": {}
 }

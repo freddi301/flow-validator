@@ -32,7 +32,7 @@ export class StringType extends VType<string> {
   }
   isEmail(): StringType {
     const em = new StringType(v => {
-      const s = string.validate(v);
+      const s = string.validate(v); // eslint-disable-next-line no-useless-escape
       const isEmail = (/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i).test(s);
       if (isEmail) return s;
       throw new ValidationError({ expected: em, got: v, description: 'invalid email' });

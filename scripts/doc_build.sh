@@ -30,6 +30,12 @@ echo "package.json" >> .gitignore
 echo ".travis.yml" >> .gitignore
 echo ".eslintrc" >> .gitignore
 echo ".babelrc" >> .gitignore
+echo ".vscode" >> .gitignore
+echo ".flow-typed" >> .gitignore
+echo ".bithoundrc" >> .gitignore
+echo ".babelrc" >> .gitignore
+echo ".flowconfig" >> .gitignore
+echo ".babelrc" >> .gitignore
 
 yarn
 npm run doc:build
