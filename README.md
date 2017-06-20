@@ -192,7 +192,7 @@ npm run doc:serve
 ## Alternatives
 - [flow-io](https://github.com/gcanti/flow-io)
 - [validated](https://github.com/andreypopp/validated)
-- 
+- [babel-plugin-tcomb](https://github.com/gcanti/babel-plugin-tcomb)
 
 ## Other Alternatives - not flow typed
 - [joi](https://github.com/hapijs/joi)
@@ -201,7 +201,8 @@ npm run doc:serve
 # Planned Features
 
 - [ ] 0.7.0
-  - [ ] include https://github.com/hapijs/joi/blob/master/API.md features
+  - [ ] include https://github.com/hapijs/joi/blob/master/API.md features see TODO.md
+  - [ ] extend()
   - [ ] typescript support
 - [ ] 0.8.0
   - [ ] generate documentation from types (md, html, jsonschema, blueprint, mson, graphql-schema)
@@ -219,7 +220,7 @@ npm run doc:serve
   - [ ] readme += new type example
 - [ ] 2.0.0
   - [ ] doc 100%
-  - [ ] performance comparison
+  - [ ] performance comparison (compete with https://github.com/ebdrup/json-schema-benchmark)
   - [ ] optimize, use lodash, cache optional() singleton and frequently used types
 
 #### Experimental
