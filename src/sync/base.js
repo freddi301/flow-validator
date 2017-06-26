@@ -2,6 +2,7 @@
 
 import { ValidationError } from './ValidationError';
 import { VType, InstanceOfType, ClassOfType, LiteralType } from './VType';
+import { Type } from './Type';
 
 export const empty: VType<void | null> = new VType('empty', v => {
   if (v === null || v === void 0) return v;
@@ -72,3 +73,13 @@ export function literal<T: LiteralTypeValue>(value: T): LiteralType<T> {
   });
   return lt;
 }
+
+export const truthy: Type<true> = new Type('truthy', v => {
+  if (Boolean(v) === true) return true;
+  throw new ValidationError({ expected: truthy, got: v });
+});
+
+export const falsy: Type<false> = new Type('falsy', v => {
+  if (Boolean(v) === false) return true;
+  throw new ValidationError({ expected: truthy, got: v });
+});

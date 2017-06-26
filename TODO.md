@@ -1,11 +1,10 @@
 # TODO
 
-- [X] default - default value
 - [ ] ref - reference to a value inside schema
 - [ ] meta - supply your own data that an be retreived
+- [ ] whitelist
+- [ ] blacklist
 - [ ] doc - for further documentation purpose
-  - [ ] whitelist
-  - [ ] blacklist
   - [ ] example, label, description, notes, tag/s, unit (of measure)
 - [ ] array
   - [ ] sparse ?
@@ -15,8 +14,6 @@
   - [ ] length (exact length)
   - [ ] unique uniqueBy(comparator)
   - [ ] filter, map, reduce
-- [ ] boolean
-  - [ ] falsy truthy
 - [ ] number
   - [ ] min max
   - [ ] integer (no floating)

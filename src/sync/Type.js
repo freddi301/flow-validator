@@ -45,7 +45,7 @@ export class Type<T> {
     });
   }
   force(value: T): Type<T> { // the default value is used if any validation error occurs
-    return new  Type('default', v => {
+    return new Type('default', v => {
       try { return this.parse(v); }
       catch (e) { if (e instanceof ValidationError) return value; throw e; }
     });

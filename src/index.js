@@ -8,7 +8,7 @@ export { AsyncVType } from './async/AsyncVType';
 export {
   empty, isNull, isUndefined, noProperty, isMixed, isAny,
   number, boolean, objectType, functionType,
-  instanceOf, classOf, literal
+  instanceOf, classOf, literal, truthy, falsy
 } from './sync/base';
 export { string } from  './sync/string';
 export { arrayType } from './sync/arrayType';
