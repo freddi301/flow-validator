@@ -1,0 +1,41 @@
+# TODO
+
+- [ ] ref - reference to a value inside schema
+- [ ] meta - supply your own data that an be retreived
+- [ ] whitelist
+- [ ] blacklist
+- [ ] doc - for further documentation purpose
+  - [ ] example, label, description, notes, tag/s, unit (of measure)
+- [ ] array
+  - [ ] sparse ?
+  - [ ] ordered (impose ordering on values)
+  - [ ] toOrdered (sort it)
+  - [ ] minLength maxLength
+  - [ ] length (exact length)
+  - [ ] unique uniqueBy(comparator)
+  - [ ] filter, map, reduce
+- [ ] number
+  - [ ] min max
+  - [ ] integer (no floating)
+  - [ ] positive negative
+  - [ ] number.round(type: 'floor' | 'ceil' | 'trunc' | 'round' = 'round')
+- [ ] object
+  - [ ] extend
+  - [ ] minKeysNo, maxKeysNo, keysNo
+  - [ ] unknownKeysPattern (regex/fun)
+  - [ ] and or nand xor with without keys
+  - [ ] required optional forbidden keys
+- [ ] string
+  - [ ] toNumber, toBoolean
+  - [ ] insensitive
+  - [ ] truncate (truncate at maxLength)
+  - [ ] creditCard
+  - [ ] replace
+  - [ ] alphanum, token
+  - [ ] ip, uri, hostname
+  - [ ] guid uuid
+  - [ ] hex, base 64
+  - [ ] lowercase uppercase is/to
+  - [ ] trim
+  - [ ] camel snake kebab constant case is/to
+- [ ] when conditional schema 
