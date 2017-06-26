@@ -38,6 +38,18 @@ export class Type<T> {
     try { return { value: this.parse(v) }; } catch (e) { if (e instanceof ValidationError) return { error: e }; throw e; }
   }
   toJSON() { return { name: this.name }; }
+  default(value: T): Type<T> { // the default value to be used if supplied value is null or undefined
+    return new Type('default', v => {
+      if (v === null || v === void null) return value;
+      return this.parse(v);
+    });
+  }
+  force(value: T): Type<T> { // the default value is used if any validation error occurs
+    return new  Type('default', v => {
+      try { return this.parse(v); }
+      catch (e) { if (e instanceof ValidationError) return value; throw e; }
+    });
+  }
   async(): AsyncType<T> { return new AsyncType(this.name, this.parse); }
 }
 

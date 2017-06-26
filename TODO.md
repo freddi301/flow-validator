@@ -1,6 +1,6 @@
 # TODO
 
-- [ ] default - default value
+- [X] default - default value
 - [ ] ref - reference to a value inside schema
 - [ ] meta - supply your own data that an be retreived
 - [ ] doc - for further documentation purpose
