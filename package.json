@@ -3,10 +3,7 @@
   "version": "0.6.1",
   "description": "object validation with flow types and more",
   "main": "lib/index.js",
-  "files": [
-    "src",
-    "lib"
-  ],
+  "files": ["src", "lib"],
   "scripts": {
     "eslint": "eslint .",
     "flow": "flow check .",
@@ -27,7 +24,7 @@
     "postpublish": "npm run doc:publish && npm run release:notes",
     "bithound": "bithound check git@github.com:freddi301/flow-validator.git",
     "release:notes": "release",
-    "prettier:precommit": "git diff -- name-only HEAD | grep \".*\\.js\" | xargs prettier --write"
+    "prettier:precommit": "git diff --name-only HEAD | grep \".*\\.js\" | xargs prettier --write"
   },
   "tags": [
     "flow",
