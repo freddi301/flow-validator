@@ -9,7 +9,7 @@ export class AsyncObjectExactType<
   T: $ObjMap<S, <F>(v: AsyncType<F>) => F>
 > extends AsyncType<T> {
   schema: S;
-  constructor(schema: S, parse: (value: mixed) => T | Promise<T>) {
+  constructor(schema: S, parse: (value: mixed) => Promise<T>) {
     super("objectExact", parse);
     this.schema = schema;
   }
@@ -21,7 +21,7 @@ export function asyncObjectExact<S: { [key: string]: AsyncType<any> }>(
   const oes = new AsyncObjectExactType(s, async v => {
     const o = objectType.validate(await v);
     const keys = Object.keys(o);
-    const result = {};
+    const result: $Exact<$ObjMap<S, <F>(v: AsyncType<F>) => F>> = ({}: any);
     const errors = {};
     await Promise.all(
       keys.map(async key => {
@@ -40,8 +40,8 @@ export function asyncObjectExact<S: { [key: string]: AsyncType<any> }>(
       })
     );
     if (Object.getOwnPropertyNames(errors).length)
-      throw new ValidationError({ expected: oes, got: o, errors });
-    return (result: any);
+      throw new ValidationError({ expected: oes, got: await o, errors });
+    return result;
   });
   return oes;
 }

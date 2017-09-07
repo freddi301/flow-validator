@@ -7,10 +7,7 @@ import { AsyncVType } from "./AsyncVType";
 
 export class AsyncVArrayOfType<T> extends AsyncVType<Array<T>> {
   innerType: AsyncVType<T>;
-  constructor(
-    t: AsyncVType<T>,
-    validate: (value: mixed) => Array<T> | Promise<Array<T>>
-  ) {
+  constructor(t: AsyncVType<T>, validate: (value: mixed) => Promise<Array<T>>) {
     super("arrayOf", validate);
     this.innerType = t;
   }

@@ -1,7 +1,6 @@
 // @flow
 
 import { ValidationError } from "../sync/ValidationError";
-import { syncFunctionToAsync } from "./syncFunctionToAsync";
 import { asyncUnion } from "./asyncUnion";
 import { asyncIntersection } from "./asyncIntersection";
 import { asyncOptional } from "./asyncOptional";
@@ -10,9 +9,9 @@ export class AsyncType<T> {
   name: string;
   parse: (value: mixed) => Promise<T>;
   type: T;
-  constructor(name: string, parse: (value: mixed) => T | Promise<T>) {
+  constructor(name: string, parse: (value: mixed) => Promise<T>) {
     this.name = name;
-    this.parse = syncFunctionToAsync(parse);
+    this.parse = parse;
   }
   to<T2>(
     transformation: (
@@ -20,17 +19,22 @@ export class AsyncType<T> {
       error: (e: string) => ValidationError
     ) => T2 | Promise<T2>
   ): AsyncType<T2> {
-    const tr = new AsyncType("transformation", async v =>
-      transformation(
+    const tr = new AsyncType("transformation", async v => {
+      const vResolved = await v;
+      return transformation(
         await this.parse(v),
         (err: string) =>
-          new ValidationError({ expected: tr, got: v, description: err })
-      )
-    );
+          new ValidationError({
+            expected: tr,
+            got: vResolved,
+            description: err
+          })
+      );
+    });
     return tr;
   }
   refine(
-    refinement: (v: T, error: (e: string) => ValidationError) => T | Promise<T>
+    refinement: (v: T, error: (e: string) => ValidationError) => Promise<T>
   ): AsyncRefinedType<T> {
     const rf = new AsyncRefinedType(this, async v =>
       refinement(
@@ -63,7 +67,7 @@ export class AsyncType<T> {
 
 export class AsyncRefinedType<T> extends AsyncType<T> {
   base: AsyncType<T>;
-  constructor(base: AsyncType<T>, f: (v: mixed) => T | Promise<T>) {
+  constructor(base: AsyncType<T>, f: (v: mixed) => Promise<T>) {
     super("refined", f);
     this.base = base;
   }

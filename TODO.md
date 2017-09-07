@@ -1,5 +1,8 @@
 # TODO
 
+- code explanation for new contributors
+- contribution guide
+
 - [ ] ref - reference to a value inside schema
 - [ ] meta - supply your own data that an be retreived
 - [ ] whitelist
@@ -38,4 +41,4 @@
   - [ ] lowercase uppercase is/to
   - [ ] trim
   - [ ] camel snake kebab constant case is/to
-- [ ] when conditional schema 
+- [ ] when conditional schema

@@ -74,6 +74,6 @@ export function asyncVreturns<R>(
   return f =>
     async function(...args) {
       const ret = f.apply(this, args);
-      return t.validate(ret);
+      return t.validate(await ret);
     };
 }

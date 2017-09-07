@@ -7,10 +7,7 @@ import { AsyncType } from "./AsyncType";
 
 export class AsyncArrayOfType<T> extends AsyncType<Array<T>> {
   innerType: AsyncType<T>;
-  constructor(
-    t: AsyncType<T>,
-    parse: (value: mixed) => Array<T> | Promise<Array<T>>
-  ) {
+  constructor(t: AsyncType<T>, parse: (value: mixed) => Promise<Array<T>>) {
     super("arrayOf", parse);
     this.innerType = t;
   }

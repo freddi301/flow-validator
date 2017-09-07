@@ -6,6 +6,7 @@ import { optional } from "./optional";
 import { intersection } from "./intersection";
 import { union } from "./union";
 import { composeLeft } from "./composeLeft";
+import { syncFunctionToAsync } from "../async/syncFunctionToAsync";
 
 export class Type<T> {
   name: string;
@@ -84,7 +85,7 @@ export class Type<T> {
     });
   }
   async(): AsyncType<T> {
-    return new AsyncType(this.name, this.parse);
+    return new AsyncType(this.name, syncFunctionToAsync(this.parse));
   }
 }
 

@@ -12,7 +12,7 @@ export class AsyncTupleType<T> extends AsyncType<T> {
   schema: Array<AsyncType<any>>;
   constructor(
     schema: Array<AsyncType<any>>,
-    parse: (value: mixed) => T | Promise<T>
+    parse: (value: mixed) => Promise<T>
   ) {
     super("tuple", parse);
     this.schema = schema;
@@ -63,7 +63,7 @@ export function asyncTuple<S: Array<AsyncType<any>>>(
       })
     );
     if (Object.getOwnPropertyNames(errors).length)
-      throw new ValidationError({ expected: tt, got: a, errors });
+      throw new ValidationError({ expected: tt, got: await a, errors });
     return result;
   });
   return tt;
@@ -73,7 +73,7 @@ export class AsyncVTupleType<T> extends AsyncVType<T> {
   schema: Array<AsyncVType<any>>;
   constructor(
     schema: Array<AsyncVType<any>>,
-    parse: (value: mixed) => T | Promise<T>
+    parse: (value: mixed) => Promise<T>
   ) {
     super("tuple", parse);
     this.schema = schema;
@@ -129,7 +129,7 @@ export function asyncVtuple<S: Array<AsyncVType<any>>>(
       })
     );
     if (Object.getOwnPropertyNames(errors).length)
-      throw new ValidationError({ expected: tt, got: a, errors });
+      throw new ValidationError({ expected: tt, got: await a, errors });
     return (a: any); // eslint-disable-line flowtype/no-weak-types
   });
   return tt;

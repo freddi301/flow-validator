@@ -6,6 +6,7 @@ import { AsyncVType } from "../async/AsyncVType";
 import { Vintersection } from "./Vintersection";
 import { Vunion } from "./Vunion";
 import { Voptional } from "./Voptional";
+import { syncFunctionToAsync } from "../async/syncFunctionToAsync";
 
 export class VType<T> extends Type<T> {
   validate: (value: mixed) => T;
@@ -52,7 +53,7 @@ export class VType<T> extends Type<T> {
     return Voptional(this);
   }
   Vasync(): AsyncVType<T> {
-    return new AsyncVType(this.name, this.validate);
+    return new AsyncVType(this.name, syncFunctionToAsync(this.validate));
   }
 }
 

@@ -15,7 +15,7 @@ import {
   ValidationError
 } from "../../src";
 
-describe("takes", () => {
+describe("asyncReturns", () => {
   const os: AsyncType<{ name: string, age: number }> = asyncObject({
     name: string.async(),
     age: number.async()
@@ -58,7 +58,7 @@ describe("takes", () => {
   });
 });
 
-describe("Vtakes", () => {
+describe("asyncVreturns", () => {
   const os: AsyncVType<{ name: string, age: number }> = asyncVobject({
     name: string.Vasync(),
     age: number.Vasync()

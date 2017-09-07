@@ -22,6 +22,7 @@ describe("asyncTakes", () => {
   });
   const decorator = asyncTakes(string.async(), os);
   const decorated = decorator(async (s, { name, age }) => {
+    const ret = [`${s}${name}`, age];
     (s: string);
     (name: string);
     (age: number);
@@ -29,7 +30,7 @@ describe("asyncTakes", () => {
     (name: number);
     // $ExpectError
     (age: string);
-    return [`${s}${name}`, age];
+    return ret;
   });
   it("returns on expected type", async () => {
     const r = await decorated("Mr.", { name: "Fred", age: 124 });
@@ -69,6 +70,7 @@ describe("asyncVtakes", () => {
   });
   const decorator = asyncVtakes(string.Vasync(), os);
   const decorated = decorator(async (s, { name, age }) => {
+    const ret = [`${s}${name}`, age];
     (s: string);
     (name: string);
     (age: number);
@@ -76,7 +78,7 @@ describe("asyncVtakes", () => {
     (name: number);
     // $ExpectError
     (age: string);
-    return [`${s}${name}`, age];
+    return ret;
   });
   it("returns on expected type", async () => {
     const r = await decorated("Mr.", { name: "Fred", age: 124 });

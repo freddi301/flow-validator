@@ -33,7 +33,7 @@ export function asyncVobject<S: { [key: string]: AsyncVType<any> }>(
       })
     );
     if (Object.getOwnPropertyNames(errors).length)
-      throw new ValidationError({ expected: os, got: o, errors });
+      throw new ValidationError({ expected: os, got: await o, errors });
     return o;
   });
   return os;

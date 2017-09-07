@@ -2,27 +2,31 @@
 
 import { ValidationError } from "../sync/ValidationError";
 import { AsyncType } from "./AsyncType";
-import { syncFunctionToAsync } from "./syncFunctionToAsync";
 import { asyncVintersection } from "./asyncVintersection";
 import { asyncVunion } from "./asyncVunion";
 import { asyncVoptional } from "./asyncVoptional";
 
 export class AsyncVType<T> extends AsyncType<T> {
   validate: (value: mixed) => Promise<T>;
-  constructor(name: string, validate: (value: mixed) => T | Promise<T>) {
+  constructor(name: string, validate: (value: mixed) => Promise<T>) {
     super(name, validate);
-    this.validate = syncFunctionToAsync(validate);
+    this.validate = validate;
   }
   Vrefine(
-    refinement: (v: T, error: (e: string) => ValidationError) => T | Promise<T>
+    refinement: (v: T, error: (e: string) => ValidationError) => Promise<T>
   ): AsyncVRefinedType<T> {
-    const rf = new AsyncVRefinedType(this, async v =>
-      refinement(
+    const rf = new AsyncVRefinedType(this, async v => {
+      const vResolved = await v;
+      return refinement(
         await this.parse(v),
         (err: string) =>
-          new ValidationError({ expected: rf, got: v, description: err })
-      )
-    );
+          new ValidationError({
+            expected: rf,
+            got: vResolved,
+            description: err
+          })
+      );
+    });
     return rf;
   }
   Vand<T2>(t2: AsyncVType<T2>): AsyncVIntersectionType<T, T2> {
@@ -74,7 +78,7 @@ export class AsyncVIntersectionType<A, B> extends AsyncVType<A & B> {
 
 export class AsyncVRefinedType<T> extends AsyncVType<T> {
   base: AsyncVType<T>;
-  constructor(base: AsyncVType<T>, f: (v: mixed) => T | Promise<T>) {
+  constructor(base: AsyncVType<T>, f: (v: mixed) => Promise<T>) {
     super("refined", f);
     this.base = base;
   }

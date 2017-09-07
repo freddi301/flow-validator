@@ -22,6 +22,7 @@ describe("takes", () => {
   });
   const decorator = takes(string, os);
   const decorated = decorator((s, { name, age }) => {
+    const ret = [`${s}${name}`, age];
     (s: string);
     (name: string);
     (age: number);
@@ -29,7 +30,7 @@ describe("takes", () => {
     (name: number);
     // $ExpectError
     (age: string);
-    return [`${s}${name}`, age];
+    return ret;
   });
   it("returns on expected type", () => {
     const r = decorated("Mr.", { name: "Fred", age: 124 });
@@ -69,6 +70,7 @@ describe("Vtakes", () => {
   });
   const decorator = Vtakes(string, os);
   const decorated = decorator((s, { name, age }) => {
+    const ret = [`${s}${name}`, age];
     (s: string);
     (name: string);
     (age: number);
@@ -76,7 +78,7 @@ describe("Vtakes", () => {
     (name: number);
     // $ExpectError
     (age: string);
-    return [`${s}${name}`, age];
+    return ret;
   });
   it("returns on expected type", () => {
     const r = decorated("Mr.", { name: "Fred", age: 124 });
