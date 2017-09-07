@@ -1,9 +1,12 @@
 {
   "name": "flow-validator",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "object validation with flow types and more",
   "main": "lib/index.js",
-  "files": ["src", "lib"],
+  "files": [
+    "src",
+    "lib"
+  ],
   "scripts": {
     "eslint": "eslint .",
     "flow": "flow check .",
@@ -12,26 +15,19 @@
     "test:file": "mocha",
     "coverage": "nyc mocha",
     "coveralls": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
-    "codeclimate:coverage":
-      "nyc npm test && nyc report --reporter=text-lcov | codeclimate-test-reporter",
-    "coverage:ci":
-      "nyc npm test && nyc report --reporter=text-lcov | coveralls && nyc report --reporter=text-lcov | codeclimate-test-reporter",
-    "build":
-      "rm -rf lib/* && babel src -d lib --source-maps && flow-copy-source -v src lib",
+    "codeclimate:coverage": "nyc npm test && nyc report --reporter=text-lcov | codeclimate-test-reporter",
+    "coverage:ci": "nyc npm test && nyc report --reporter=text-lcov | coveralls && nyc report --reporter=text-lcov | codeclimate-test-reporter",
+    "build": "rm -rf lib/* && babel src -d lib --source-maps && flow-copy-source -v src lib",
     "doc:serve": "documentation serve src -g --document-exported -w -f html",
     "doc:lint": "documentation lint src -g",
-    "doc:build":
-      "rm -r doc/*; mv src/index.js src/index; documentation build src -g --document-exported -f html -o doc --sort-order alpha; mv src/index src/index.js",
-    "doc:publish":
-      "./scripts/doc_build.sh && git push origin gh-pages:gh-pages",
-    "precommit":
-      "npm run prettier:precommit && npm run doc:lint && npm run eslint && npm run flow && npm run checkdeps && npm test && npm run coverage && npm run build",
+    "doc:build": "rm -r doc/*; mv src/index.js src/index; documentation build src -g --document-exported -f html -o doc --sort-order alpha; mv src/index src/index.js",
+    "doc:publish": "./scripts/doc_build.sh && git push origin gh-pages:gh-pages",
+    "precommit": "npm run prettier:precommit && npm run doc:lint && npm run eslint && npm run flow && npm run checkdeps && npm test && npm run coverage && npm run build",
     "prepublish": "npm run precommit",
     "postpublish": "npm run doc:publish && npm run release:notes",
     "bithound": "bithound check git@github.com:freddi301/flow-validator.git",
     "release:notes": "release",
-    "prettier:precommit":
-      "git diff --name-only HEAD | grep \".*\\.js\" | xargs prettier --write"
+    "prettier:precommit": "git diff --name-only HEAD | grep \".*\\.js\" | xargs prettier --write"
   },
   "tags": [
     "flow",
